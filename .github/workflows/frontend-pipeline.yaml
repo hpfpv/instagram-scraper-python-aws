@@ -3,7 +3,7 @@ name: Deploy Frontend
 # Deploy when push made from frontend folder.
 on:
     push:
-        branches: [ main ]
+        branches: [ master ]
         paths:
         - 'frontend/**'
     
