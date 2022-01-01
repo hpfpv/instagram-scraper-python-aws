@@ -2,7 +2,7 @@ name: SAM deploy backend
 
 on:
   push:
-      branches: [ main ]
+      branches: [ master ]
       paths:
         - 'backend/**'
 jobs:
