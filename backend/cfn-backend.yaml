@@ -23,7 +23,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./
-      Handler: get_stories_tagged.lambda_handler
+      Handler: instaScraper.get_stories_tagged.lambda_handler
       Events:
         getStoriesTaggedApi:
           Type: HttpApi
