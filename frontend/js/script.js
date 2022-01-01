@@ -1,5 +1,4 @@
 var apiEndpoint = 'https://iscacd5zck.execute-api.us-east-1.amazonaws.com/dev/';
-
 const stories;
 
 function getStoriesTagged() {
