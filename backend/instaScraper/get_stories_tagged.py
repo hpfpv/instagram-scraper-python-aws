@@ -105,6 +105,7 @@ def lambda_handler(event, context):
             'body': json.dumps(response)
         }
     else:
+        logger.info(response)
         return {
             'statusCode': 204,
             'headers': {
