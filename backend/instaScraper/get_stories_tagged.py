@@ -57,9 +57,9 @@ def lambda_handler(event, context):
     account_to_mention = event['pathParameters']['account_to_mention']
     # logger.info("Account to mention", account_to_mention)
     stories = get_followers_stories_if_mentionned(account_to_mention)
+    logger.info(stories)
     response = []
     if(stories["status"] == True):
-        logger.info(stories)
         for story in stories:
             story_owner = story["node"]["owner"]["username"]
             story_id = story["node"]["id"]
