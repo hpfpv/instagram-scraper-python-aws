@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Insta Game </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css"> 
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+  <link rel="shortcut icon" href="img/favicon.png" >
+</head>
+<body>
+  <div class="display_all">
+    <div class="story_details_big">
+      <div class="d-flex justify-content-center h-100">
+          <div class="image_outer_container">
+              <div class="green_icon"></div>
+              <div class="image_inner_container">
+                  <img  id="story_avatar_big">
+              </div>
+          </div>
+      </div>
+      <div class="story_user_big " id="story_user"></div>
+    </div>
+    <div class="story">
+      <div class="story_top">
+        <div id="times" class="time"></div>
+        <div class="story_details">
+          <div class="story_avatar" id="story_avatar" ></div>
+          <div class="story_user" id="story_user"></div>
+          <div class="story_time" id="story_time"></div>
+        </div>
+      </div>
+      <video id="story_video" class="story_video"></video>
+      <img id="story_image" class="story_image">
+      <div id="back"></div>
+      <div id="next"></div>
+    </div>
+    <div class="options">
+      <div class="options_text">To load new stories.<br />Reload the page after 10 minutes at least.</div>
+        <br>
+        <div class="options_button">
+          <button class="btn btn-info" onclick="window.location.reload();" >Reload</button>
+          <a href="./index.html"><button class="btn btn-danger">Stop</button> </a>
+        </div>
+    </div>
+    
+  </div>
+  <script>
+  setup()
+  </script>
+</body>
+</html>
+

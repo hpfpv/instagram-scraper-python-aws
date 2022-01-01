@@ -38,10 +38,3 @@ def download_stories(accounts):
         logger.info(json.dumps(message))
         print (json.dumps(message))
         sys.exit(1)
-
-def handler():
-    accounts = ["229eaglemotion"]
-    download_stories(accounts)
-
-if __name__ == "__main__":
-    handler()

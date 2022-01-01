@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: "Stack for instastories-houessou-com"
+
+Globals:
+  Function:
+    Runtime: python3.8
+
+Resources:
+  MainHttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowMethods:
+          - GET
+        AllowOrigins:
+          - https://instastories.houessou.com
+        AllowHeaders:
+          - '*'
+      StageName: dev
+                        
+  getStoriesTagged:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./instaScraper
+      Handler: get_stories_tagged.lambda_handler
+      Events:
+        getStoriesTaggedApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref MainHttpApi
+            Path: /{account_to_mention}/stories
+            Method: GET
+
+Outputs:
+  MainHttpApi:
+    Value: !Join [ '', ['https://', !Ref MainHttpApi, '.execute-api.us-east-1.amazonaws.com/dev'] ]
+    Export:
+      Name: !Sub "${AWS::StackName}-MainHttpApiURL"
+  StackName: 
+    Value: !Sub "${AWS::StackName}"
