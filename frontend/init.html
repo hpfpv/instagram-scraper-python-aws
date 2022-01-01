@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Insta Game Launcher</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <link rel="shortcut icon" href="img/favicon.png" >
+</head>
+<body>
+    <div class="container-fluid" style="text-align: center">
+        <a class="navbar-brand" href="#">
+            <!-- <img src="img/logo.png" id="logo" align="center"/> -->
+            <b id="brand-title"></b>
+        </a>
+    </div>
+    <br>
+    <div class="options_init">
+        <div id="option_init_form" class="">
+            <h4 class="options_init_header">Welcome to our mini Insta Game. <br>Provide requested information and click on the Get Started button.</h4>
+            <br>
+            <form action="{{ url_for('start') }}" method="post">
+                <div class="form-group input-field">
+                    <label for="account_to_mention">Instagram account to be featured</label>
+                    <input type="text" class="form-control rounded-0" name="account_to_mention" id="account_to_mention" required>
+                </div>
+                <button class="btn btn-success" type="submit"  >Get Started</button>
+            </form> 
+            <br>
+        </div>
+        <!-- <div class="promo_init">
+            <input type="text" id="promo_title" name="promo_title" placeholder="Promo title">
+            <br>
+            <input type="text" id="promo_text" name="promo_text" placeholder="Promo text">
+        </div> -->
+        <h6 id="option_init_work_in_progress" class="d-none">Work in progress. Please wait...</h6>
+    </div>
+
+</body>
+<script  src="js/script.js"></script>
+<script>
+    function work_in_progress() {
+        document.getElementById('option_init_work_in_progress').classList.remove('d-none')
+        document.getElementById('option_init_form').classList.add('d-none');
+    }
+</script>
+</html>

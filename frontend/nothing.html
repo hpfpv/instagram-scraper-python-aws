@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Insta Game Launcher</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <link rel="shortcut icon" href="img/favicon.png" >
+</head>
+<body>
+    <div class="container-fluid" style="text-align: center">
+        <a class="navbar-brand" href="#">
+            <!-- <img src="img/logo.png" id="logo" align="center"/> -->
+            <b id="brand-title"></b>
+        </a>
+    </div>
+    <br>
+    <div class="options_nothing">
+        <div class="options_nothing_text">No stories to display.<br />Reload the page after 10 minutes at least.</div>
+          <br>
+          <div class="options_button">
+            <button class="btn btn-info" onclick="window.location.reload();" >Reload</button>
+            <a href="{{ url_for('start') }}"><button class="btn btn-danger">Stop</button> </a>
+          </div>
+    </div>
+
+</body>
+<script  src="js/script.js"></script>
+</html>
