@@ -18,12 +18,13 @@ Resources:
         AllowHeaders:
           - '*'
       StageName: dev
-                        
+  
   getStoriesTagged:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./
       Handler: instaScraper.get_stories_tagged.lambda_handler
+      Timeout: 900
       Events:
         getStoriesTaggedApi:
           Type: HttpApi
