@@ -10,7 +10,7 @@ function getStoriesTagged() {
   type : 'GET',
   success : function(response) {
       console.log("Account to mention", account_to_mention);
-      if (response){
+      if (response.status == '200'){
         stories = JSON.parse(response);
         window.location = './stories.html';
       } else {
