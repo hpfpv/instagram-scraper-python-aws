@@ -118,13 +118,16 @@ def check_for_new_stories(stories, account_to_mention):
                                 response.append(storyItemJson)
                             else:
                                 # print(f"Story Item {id} from username {owner} has already been processed")
-                                logger.info(f"Story Item {id} from username {owner} has already been processed")
+                                # logger.info(f"Story Item {id} from username {owner} has already been processed")
+                                pass
                         else:
                             # print(f"Story Item {id} not mentionning {account_to_mention}")
-                            logger.info(f"Story Item {id} not mentionning {account_to_mention}")
+                            # logger.info(f"Story Item {id} not mentionning {account_to_mention}")
+                            pass
                     else:
                         # print(f"Story Item {id} has no mentions")
-                        logger.info(f"Story Item {id} has no mentions")
+                        # logger.info(f"Story Item {id} has no mentions")
+                        pass
         except (Exceptions.LoginRequiredException, Exceptions.PrivateProfileNotFollowedException) as err:
             log["message"] = str(err)
             logger.info(json.dumps(log))
