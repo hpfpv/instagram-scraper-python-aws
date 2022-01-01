@@ -1,4 +1,4 @@
-var apiEndpoint = 'api/dev/';
+var apiEndpoint = 'https://iscacd5zck.execute-api.us-east-1.amazonaws.com/dev/';
 var storiesDataFlask = '{{stories | tojson}}';
 const stories;
 

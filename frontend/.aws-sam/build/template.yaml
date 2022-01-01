@@ -1,0 +1,116 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: This stack deploys the s3 bucket, cdn and oai for instastories-houessou-com
+  website.
+Resources:
+  webBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName:
+        Fn::Sub: hpf-${AWS::StackName}
+  webBucketOAI:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    DeletionPolicy: Retain
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment:
+          Fn::Join:
+          - ''
+          - - access-identity-
+            - Ref: webBucket
+            - .s3.amazonaws.com
+  webBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    DeletionPolicy: Retain
+    Properties:
+      Bucket:
+        Ref: webBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - s3:GetObject
+          Resource:
+            Fn::Join:
+            - ''
+            - - Fn::GetAtt:
+                - webBucket
+                - Arn
+              - /*
+          Principal:
+            AWS:
+              Fn::Sub: arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity
+                ${webBucketOAI}
+  webBucketCF:
+    Type: AWS::CloudFront::Distribution
+    DeletionPolicy: Retain
+    DependsOn: webBucket
+    Properties:
+      DistributionConfig:
+        Aliases:
+        - instastories.houessou.com
+        Comment:
+          Fn::Join:
+          - ''
+          - - 'CDN for '
+            - Ref: webBucket
+        Enabled: 'true'
+        DefaultRootObject: index.html
+        DefaultCacheBehavior:
+          AllowedMethods:
+          - HEAD
+          - DELETE
+          - POST
+          - GET
+          - OPTIONS
+          - PUT
+          - PATCH
+          ForwardedValues:
+            QueryString: 'false'
+          TargetOriginId:
+            Fn::Join:
+            - ''
+            - - Ref: webBucket
+              - .s3.us-east-1.amazonaws.com
+          ViewerProtocolPolicy: redirect-to-https
+        Origins:
+        - S3OriginConfig:
+            OriginAccessIdentity:
+              Fn::Sub: origin-access-identity/cloudfront/${webBucketOAI}
+          DomainName:
+            Fn::Join:
+            - ''
+            - - Ref: webBucket
+              - .s3.us-east-1.amazonaws.com
+          Id:
+            Fn::Join:
+            - ''
+            - - Ref: webBucket
+              - .s3.us-east-1.amazonaws.com
+        ViewerCertificate:
+          SslSupportMethod: sni-only
+          AcmCertificateArn:
+            Fn::Join:
+            - ''
+            - - 'arn:aws:acm:'
+              - Ref: AWS::Region
+              - ':'
+              - Ref: AWS::AccountId
+              - :certificate/a33e4703-d78f-4267-a889-ed7d045393e5
+Outputs:
+  webBucket:
+    Value:
+      Ref: webBucket
+    Export:
+      Name:
+        Fn::Sub: ${AWS::StackName}-webBucket
+  webBucketCFDomainName:
+    Value:
+      Fn::GetAtt:
+      - webBucketCF
+      - DomainName
+    Export:
+      Name:
+        Fn::Sub: ${AWS::StackName}-webBucketCFDomainName

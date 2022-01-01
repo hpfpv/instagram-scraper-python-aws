@@ -1,0 +1,62 @@
+[
+    {
+        "username": "timothylbeatty",
+        "password": "oophaK3oo0",
+        "fullname": "Timothy L. Beatty",
+        "email": "TimothyLBeatty@gmail.com",
+        "birthday": "March 4, 1961",
+        "gender": "male",
+        "phone": "51878144",
+        "status": "active"
+    },
+    {
+        "username": "patrickcmarin",
+        "password": "Eing7eiph",
+        "fullname": "Patrick C. Marin",
+        "email": "PatrickCMarin@gmail.com",
+        "birthday": "March 19, 1977",
+        "gender": "male",
+        "phone": "51878144",
+        "status": "active"
+    },
+    {
+        "username": "kargleannaf",
+        "password": "xooNoh3ong",
+        "fullname": "Leanna F. Karg",
+        "email": "kargleannaf@hotmail.com",
+        "birthday": "June 2, 1984",
+        "gender": "female",
+        "phone": "51878144",
+        "status": "to be deleted"
+    },
+    {
+        "username": "fadwasameerakoury",
+        "password": "aeThii8eiw",
+        "fullname": "Fadwa Sameera Koury",
+        "email": "fadwasameerakoury@hotmail.com",
+        "birthday": "July 9, 1983",
+        "gender": "female",
+        "phone": "53187382",
+        "status": "pending"
+    },
+    {
+        "username": "hudsonmcgowen",
+        "password": "vaJai8Yair",
+        "fullname": "Hudson McGowen",
+        "email": "hudsonmcgowen@hotmail.com",
+        "birthday": "April 6, 1987",
+        "gender": "male",
+        "phone": "00000000",
+        "status": "active"
+    },
+    {
+        "username": "shirleydgoodman",
+        "password": "zieji5Jei3Ie0",
+        "fullname": "Shirley D. Goodman",
+        "email": "shirleydgoodman@hotmail.com",
+        "birthday": "March 21, 1983",
+        "gender": "female",
+        "phone": "00000000",
+        "status": "active"
+    }
+]

@@ -9,7 +9,7 @@ Resources:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
     Properties:
-      BucketName: !Sub "${AWS::StackName}-web"
+      BucketName: !Sub "hpf-${AWS::StackName}"
   
   webBucketOAI:
     Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
@@ -33,7 +33,7 @@ Resources:
             Principal: 
               AWS: !Sub 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${webBucketOAI}'
 
-  wbBucketCF:
+  webBucketCF:
     Type: AWS::CloudFront::Distribution
     DeletionPolicy: Retain
     DependsOn: webBucket
