@@ -30,31 +30,36 @@ def get_followers_stories_if_mentionned(account_to_mention):
     # Check for newest stories and save them when mentionned
     dir = "instaScraper/tagged-stories/"
     new_stories = check_for_new_stories(stories, account_to_mention)
+    response = []
     if new_stories["status"] == True:
         log["message"] = "New stories found"
-        print(json.dumps(log))
         logger.info(json.dumps(log))
         for x in [current_date_time, "latest"]:
             file = dir + x + ".json"
             f = open(file, "w")
             f.write(json.dumps(new_stories["body"]))
             f.close()
-
-        return new_stories["body"]
+        response = new_stories["body"]
+        return {
+                "status": True, 
+                "body": response
+            }
     else:
         log["message"] = "No new stories"
-        print(json.dumps(log))
         logger.info(json.dumps(log))
+        return {
+                "status": False, 
+                "body": response
+            }
 
 def lambda_handler(event, context):
     logger.info(event)
     account_to_mention = event['pathParameters']['account_to_mention']
     # logger.info("Account to mention", account_to_mention)
     stories = get_followers_stories_if_mentionned(account_to_mention)
-
-    if(stories):
+    response = []
+    if(stories["status"] == True):
         logger.info(stories)
-        response = []
         for story in stories:
             story_owner = story["node"]["owner"]["username"]
             story_id = story["node"]["id"]
@@ -87,7 +92,6 @@ def lambda_handler(event, context):
                 'media': story_id,
                 'time': story_duration
             }
-
             response.append(data)
         logger.info(response)
         return {
@@ -109,5 +113,5 @@ def lambda_handler(event, context):
                 'Access-Control-Allow-Methods': 'GET',
                 'Content-Type': 'application/json'
             },
-            'body': ''
+            'body': json.dumps(response)
         }
