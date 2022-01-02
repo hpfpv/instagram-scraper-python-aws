@@ -210,6 +210,7 @@ function getStoriesTagged() {
   },
   error : function(response) {
       console.log("could not stories");
+      window.location = './error.html';
   }
   });
 }
