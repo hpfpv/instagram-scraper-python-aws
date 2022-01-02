@@ -1,27 +1,5 @@
-var apiEndpoint = 'https://iscacd5zck.execute-api.us-east-1.amazonaws.com/dev/';
-var stories;
-
-function getStoriesTagged() {
-  var account_to_mention = document.getElementById('account_to_mention').value;
-  var getStoriesTaggedApi = apiEndpoint + account_to_mention +'/stories';
-
-  $.ajax({
-  url : getStoriesTaggedApi,
-  type : 'GET',
-  success : function(response) {
-      console.log("Account to mention", account_to_mention);
-      if (response.status == '200'){
-        stories = JSON.parse(response);
-        window.location = './stories.html';
-      } else {
-        window.location = './nothing.html';
-      }
-  },
-  error : function(response) {
-      console.log("could not stories");
-  }
-  });
-}
+const apiEndpoint = 'https://iscacd5zck.execute-api.us-east-1.amazonaws.com/dev/';
+let stories;
 
 const story_container = document.querySelector('.display_all')
 const nextButton = document.querySelector('#next')
@@ -212,3 +190,27 @@ const setup = async () => {
   s.back()
   })
 }
+
+function getStoriesTagged() {
+  var account_to_mention = document.getElementById('account_to_mention').value;
+  var getStoriesTaggedApi = apiEndpoint + account_to_mention +'/stories';
+
+  $.ajax({
+  url : getStoriesTaggedApi,
+  type : 'GET',
+  success : function(response) {
+      console.log("Account to mention", account_to_mention);
+      if (response.status == '200'){
+        stories = JSON.parse(response);
+        window.location = './stories.html';
+        setup();
+      } else {
+        window.location = './nothing.html';
+      }
+  },
+  error : function(response) {
+      console.log("could not stories");
+  }
+  });
+}
+
