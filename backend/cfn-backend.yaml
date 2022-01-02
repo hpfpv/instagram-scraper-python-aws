@@ -7,24 +7,47 @@ Globals:
     Runtime: python3.8
 
 Resources:
+  EventsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-events-table"
+      AttributeDefinitions:
+          - AttributeName: requestId
+            AttributeType: S
+      KeySchema:
+        - AttributeName: requestId
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
+                       
   MainHttpApi:
     Type: AWS::Serverless::HttpApi
     Properties:
+      StageName: dev
       CorsConfiguration:
         AllowMethods:
           - GET
+          - POST
+          - DELETE
         AllowOrigins:
           - https://instastories.houessou.com
         AllowHeaders:
           - '*'
-      StageName: dev
-  
-  getStoriesTagged:
+      # DefinitionBody: 
+      #   'Fn::Transform':
+      #     Name: 'AWS::Include'
+      #     Parameters:
+      #       Location: './MainHttpApi.yaml'
+
+  recordEvents:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./
-      Handler: instaScraper.get_stories_tagged.lambda_handler
-      Timeout: 900
+      Handler: record_events.lambda_handler
+      Environment: 
+        Variables:
+          EVENTS_TABLE: !Ref EventsTable
       Events:
         getStoriesTaggedApi:
           Type: HttpApi
@@ -32,6 +55,57 @@ Resources:
             ApiId: !Ref MainHttpApi
             Path: /{account_to_mention}/stories
             Method: GET
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - 'dynamodb:DescribeTable'
+                - 'dynamodb:BatchWriteItem'
+                - 'dynamodb:PutItem'
+                - 'dynamodb:Query'
+                - 'dynamodb:UpdateItem'
+              Resource:
+                - !GetAtt EventsTable.Arn
+            - Effect: 'Allow'
+              Action:
+                - 'dynamodb:ListTables'
+              Resource: '*'
+              Condition: {}
+
+  getStoriesTagged:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: instaScraper.get_stories_tagged.lambda_handler
+      Timeout: 900
+      Environment: 
+        Variables:
+          EVENTS_TABLE: !Ref EventsTable
+      Events:
+        DynamoDBStreams:
+          Type: DynamoDB
+          Properties:
+            Stream: !GetAtt EventsTable.StreamArn
+            StartingPosition: TRIM_HORIZON
+            BatchSize: 10
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - 'dynamodb:DescribeTable'
+                - 'dynamodb:BatchWriteItem'
+                - 'dynamodb:PutItem'
+                - 'dynamodb:Query'
+                - 'dynamodb:UpdateItem'
+              Resource:
+                - !GetAtt EventsTable.Arn
+            - Effect: 'Allow'
+              Action:
+                - 'dynamodb:ListTables'
+              Resource: '*'
+              Condition: {}
 
 Outputs:
   MainHttpApi:

@@ -2,10 +2,13 @@ from instaScraper.modules.instance import get_instance
 from instaScraper.modules.stories import get_followers_stories, check_for_new_stories, story_time_str
 from instaScraper.modules.download import profile_picture, story_media
 
+import os
+import boto3
 import json
 from datetime import datetime
 import logging
 
+client = boto3.client('dynamodb', region_name='us-east-1')
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
@@ -51,16 +54,11 @@ def get_followers_stories_if_mentionned(account_to_mention):
                 "status": False, 
                 "body": response
             }
-
-def lambda_handler(event, context):
-    logger.info(event)
-    account_to_mention = event['pathParameters']['account_to_mention']
-    # logger.info("Account to mention", account_to_mention)
-    stories = get_followers_stories_if_mentionned(account_to_mention)
+def formated_response_json(stories):
     logger.info(stories)
     response = []
     if(stories["status"] == True):
-        for story in stories:
+        for story in stories["body"]:
             story_owner = story["node"]["owner"]["username"]
             story_id = story["node"]["id"]
             story_owner_profile_pic_url = story["node"]["owner"]["profile_pic_url"]
@@ -94,25 +92,38 @@ def lambda_handler(event, context):
             }
             response.append(data)
         logger.info(response)
-        return {
-            'statusCode': 200,
-            'headers': {
-                'Access-Control-Allow-Origin': 'https://instastories.houessou.com',
-                'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
-                'Access-Control-Allow-Methods': 'GET',
-                'Content-Type': 'application/json'
-            },
-            'body': json.dumps(response)
-        }
-    else:
-        logger.info(response)
-        return {
-            'statusCode': 204,
-            'headers': {
-                'Access-Control-Allow-Origin': 'https://instastories.houessou.com',
-                'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
-                'Access-Control-Allow-Methods': 'GET',
-                'Content-Type': 'application/json'
-            },
-            'body': json.dumps(response)
-        }
+    return json.dumps(response)
+
+def lambda_handler(event, context):
+    logger.info(event)
+    for record in event ['Records']:
+        if record['eventName'] == 'INSERT':
+            requestId = record['dynamodb']['NewImage']['requestId']['S']
+            account_to_mention = record['dynamodb']['NewImage']['account']['S']
+            stories = get_followers_stories_if_mentionned(account_to_mention)
+            srories_response = formated_response_json(stories)
+
+            response = client.update_item(
+                TableName=os.environ['EVENTS_TABLE'],
+                Key={
+                    'requetsId': {
+                        'S': requestId,
+                    }
+                },
+                UpdateExpression="SET response = :b",
+                ExpressionAttributeValues={':b': {'S': srories_response}}
+            )
+            response = {}
+            response["Update"] = "Success"
+            return json.dumps(response)
+            # return {
+            #     'statusCode': 200,
+            #     'headers': {
+            #         'Access-Control-Allow-Origin': 'https://instastories.houessou.com',
+            #         'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+            #         'Access-Control-Allow-Methods': 'GET',
+            #         'Content-Type': 'application/json'
+            #     },
+            #     'body': json.dumps(response)
+            # }
+
