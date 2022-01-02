@@ -106,7 +106,7 @@ def lambda_handler(event, context):
             response = client.update_item(
                 TableName=os.environ['EVENTS_TABLE'],
                 Key={
-                    'requetsId': {
+                    'requestId': {
                         'S': requestId,
                     }
                 },
