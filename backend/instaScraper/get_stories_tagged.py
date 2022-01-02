@@ -110,7 +110,7 @@ def lambda_handler(event, context):
                         'S': requestId,
                     }
                 },
-                UpdateExpression="SET response = :b",
+                UpdateExpression="SET stories = :b",
                 ExpressionAttributeValues={':b': {'S': srories_response}}
             )
             response = {}
