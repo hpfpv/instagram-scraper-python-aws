@@ -14,22 +14,24 @@ def lambda_handler(event, context):
     log = {}
     log["function"] = "record_events"
 
-    account_to_mention = event['pathParameters']['account_to_mention']
     requestId = event['requestContext']['requestId']
+    time = event['requestContext']['time']
+    account_to_mention = event['pathParameters']['account_to_mention']
     
     record = {
         "requestId" : { "S": requestId },
-        "account" : { "S": account_to_mention },
+        "time" : { "S": time },
+        "account" : { "S": account_to_mention }
     }
 
     log["message"] = json.dumps(record)
-
     logger.info(json.dumps(log))
 
-    response = client.put_item(
+    client.put_item(
         TableName=os.environ['EVENTS_TABLE'],
         Item=record,
         )  
+
     responseBody = {
         'requestId' : requestId
     }
