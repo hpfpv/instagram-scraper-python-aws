@@ -33,7 +33,6 @@ def lambda_handler(event, context):
     responseBody = {
         'requestId' : requestId
     }
-    responseBody["status"] = "accepted"
     return {
         'statusCode': 202,
         'headers': {
