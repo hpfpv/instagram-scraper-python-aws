@@ -92,8 +92,6 @@ def formated_response_json(stories):
             }
             response.append(data)
         logger.info(response)
-    else:
-        response = ''
     return json.dumps(response)
 
 def lambda_handler(event, context):
