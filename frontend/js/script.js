@@ -1,5 +1,5 @@
 var apiEndpoint = 'https://iscacd5zck.execute-api.us-east-1.amazonaws.com/dev/';
-const stories;
+var stories;
 
 function getStoriesTagged() {
   var account_to_mention = document.getElementById('account_to_mention').value;
@@ -163,54 +163,52 @@ this.render()
 }
 
 const setup = async () => {
-is_video = true;
-const loadVideos = stories.map(({ media }) => {
-return new Promise((resolve, reject) => {
-  var video = document.getElementById('story_video');
-  // video.autoplay = true;
-  // video.muted = true;
-  video.playsInline = true;
-  video.src = "media/" + media + ".mp4"
-  // video.controls = true;
-  video.load();
-
-  video.addEventListener('canplaythrough', function(){
-    resolve(video);
-    console.log(is_video)
-  });
-  video.addEventListener('error', function(){
-    reject(video);
-    is_video = false;
-    // console.log(is_video)
-  })
-})
-})
-if (is_video == true) {
-// await Promise.all(loadVideos);
-} else {
-is_video = false
-const loadImages = stories.map(({ media }) => {
+  is_video = true;
+  const loadVideos = stories.map(({ media }) => {
   return new Promise((resolve, reject) => {
-    let img = document.getElementById('story_image');
-    img.onload = () => {
-      resolve(media)
-    }
-    img.src = "media/" + media + ".jpg" 
+    var video = document.getElementById('story_video');
+    // video.autoplay = true;
+    // video.muted = true;
+    video.playsInline = true;
+    video.src = "media/" + media + ".mp4"
+    // video.controls = true;
+    video.load();
+
+    video.addEventListener('canplaythrough', function(){
+      resolve(video);
+      console.log(is_video)
+    });
+    video.addEventListener('error', function(){
+      reject(video);
+      is_video = false;
+      // console.log(is_video)
+    })
   })
-})
-// await Promise.all(loadImages)
-}
+  })
+  if (is_video == true) {
+  // await Promise.all(loadVideos);
+  } else {
+  is_video = false
+  const loadImages = stories.map(({ media }) => {
+    return new Promise((resolve, reject) => {
+      let img = document.getElementById('story_image');
+      img.onload = () => {
+        resolve(media)
+      }
+      img.src = "media/" + media + ".jpg" 
+    })
+  })
+  // await Promise.all(loadImages)
+  }
 
+  const s = new Storyfier(stories, story_container);
+  s.start()
 
+  nextButton.addEventListener('click', () => {
+  s.next()
+  })
 
-const s = new Storyfier(stories, story_container);
-s.start()
-
-nextButton.addEventListener('click', () => {
-s.next()
-})
-
-backButton.addEventListener('click', () => {
-s.back()
-})
+  backButton.addEventListener('click', () => {
+  s.back()
+  })
 }
