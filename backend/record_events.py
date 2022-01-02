@@ -30,10 +30,12 @@ def lambda_handler(event, context):
         TableName=os.environ['EVENTS_TABLE'],
         Item=record,
         )  
-    responseBody = {}
-    responseBody["status"] = "success"
+    responseBody = {
+        'requestId' : requestId
+    }
+    responseBody["status"] = "accepted"
     return {
-        'statusCode': 200,
+        'statusCode': 202,
         'headers': {
             'Access-Control-Allow-Origin': 'https://instastories.houessou.com',
             'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
