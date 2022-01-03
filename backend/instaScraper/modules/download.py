@@ -3,9 +3,12 @@ import urllib.request
 import os
 from functools import lru_cache
 from pymediainfo import MediaInfo
-
+import logging
 import boto3
 import botocore
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 webbucket = os.environ['WEB_BUCKET']
 s3 = boto3.client('s3')
@@ -13,6 +16,7 @@ bucketurl = f'https://{webbucket}.s3.amazonaws.com/'
 
 # @lru_cache(maxsize=128)
 def profile_picture(url, filename):
+    logger.info('Start download profile')
     dir = 'profile/'
     filekey = f"{dir}/{filename}.jpg"
     file = f"{filename}.jpg"
@@ -27,11 +31,11 @@ def profile_picture(url, filename):
             files = {'file': open(file, 'rb')}
             s3file = requests.post(bucketurl, data, files)
             os.remove(file)
-        
+    logger.info('End download profile')
 
 # @lru_cache(maxsize=128)
 def story_media(video, display, is_video, filename):
-    
+    logger.info('Start download media')
     dir = 'media/'
     video_filekey = f"{dir}/{filename}.mp4"
     display_filekey = f"{dir}/{filename}.jpg"
@@ -57,8 +61,6 @@ def story_media(video, display, is_video, filename):
                 files2 = {'file': open(video_file, 'rb')}
                 s3file2 = requests.post(bucketurl, data2, files2)
                 os.remove(display_file)
-                
-        # story_duration = MediaInfo.parse(video_file).tracks[0].duration
     else:
         try:
             s3.get_object(Bucket=webbucket, Key=video_filekey)
@@ -71,7 +73,5 @@ def story_media(video, display, is_video, filename):
                 files3 = {'file': open(video_file, 'rb')}
                 s3file3 = requests.post(bucketurl, data3, files3)
                 os.remove(display_file)
+    logger.info('End download media')
             
-        # story_duration = 5000
-    
-    # return story_duration
