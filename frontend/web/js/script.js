@@ -215,7 +215,7 @@ function initStories() {
       // }
   },
   error : function(response) {
-      // window.location = './error.html';
+      window.location = './error.html';
       console.log("An error occured while initiating the request");
   }
   });
@@ -238,7 +238,7 @@ function retrieveStories(requestId) {
       }
   },
   error : function(response) {
-      // window.location = './error.html';
+      window.location = './error.html';
       console.log("An error occured while retriving stories");
   }
   });
