@@ -89,6 +89,7 @@ Resources:
         Variables:
           EVENTS_TABLE: !Ref EventsTable
           STORIES_BUCKET: !Ref storiesBucket
+          WEB_BUCKET: !ImportValue instastories-houessou-com-website-webBucket
       Events:
         DynamoDBStreams:
           Type: DynamoDB
@@ -96,7 +97,7 @@ Resources:
             Stream: !GetAtt EventsTable.StreamArn
             StartingPosition: TRIM_HORIZON
             BatchSize: 10
-            MaximumRetryAttempts: 2
+            MaximumRetryAttempts: 1
       Policies:
         - Version: "2012-10-17"
           Statement:
@@ -122,6 +123,9 @@ Resources:
                 - 's3:DeleteObject'
               Resource:
                 - !GetAtt 'storiesBucket.Arn'
+                - 'Fn::GetAtt':
+                  - !ImportValue instastories-houessou-com-website-webBucket
+                  - Arn
                 - !Join ['', [!GetAtt 'storiesBucket.Arn', '/*']]
     
   retrieveStories:

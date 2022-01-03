@@ -103,7 +103,7 @@ def check_for_new_stories(stories, account_to_mention):
     bucket = os.environ['STORIES_BUCKET']
     s3 = boto3.client('s3')
 
-    dir = "instaScraper/tagged-stories/"
+    dir = "data/" + account_to_mention + "/history/"
     result = 0
     response = []
     for story in stories:
@@ -115,7 +115,7 @@ def check_for_new_stories(stories, account_to_mention):
                 for x in storyItemJson["node"]["tappable_objects"]:
                     if x["__typename"] == "GraphTappableMention":
                         if x["username"] == account_to_mention:
-                            filekey = dir + ".temp/" + owner + "-" + id + ".json"
+                            filekey = dir + owner + "-" + id + ".json"
                             try:
                                 s3.get_object(Bucket=bucket, Key=filekey)
                             except botocore.exceptions.ClientError as e:

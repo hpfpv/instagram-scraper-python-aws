@@ -33,7 +33,7 @@ def get_followers_stories_if_mentionned(account_to_mention):
     current_date_time = datetime.now().strftime("%d-%m-%Y-%H:%M:%S")
 
     # Check for newest stories and save them when mentionned
-    dir = "instaScraper/tagged-stories/"
+    dir = "data/" + account_to_mention + "/"
     new_stories = check_for_new_stories(stories, account_to_mention)
     response = []
     if new_stories["status"] == True:
