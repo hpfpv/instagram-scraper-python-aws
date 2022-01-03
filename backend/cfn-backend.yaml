@@ -133,6 +133,7 @@ Resources:
     Properties:
       CodeUri: ./
       Handler: retrieve_stories.lambda_handler
+      Timeout: 900
       Environment: 
         Variables:
           EVENTS_TABLE: !Ref EventsTable
