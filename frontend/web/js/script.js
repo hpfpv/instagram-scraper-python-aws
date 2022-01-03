@@ -1,5 +1,5 @@
 const apiEndpoint = 'https://iscacd5zck.execute-api.us-east-1.amazonaws.com/dev/';
-let stories;
+// let stories;
 let workumber = 0;
 
 const story_container = document.querySelector('.display_all')
@@ -257,9 +257,9 @@ function retrieveStories(requestId) {
       } else {
         // storiesBackend = '{{response.stories | tojson}}'
         // stories = JSON.parse(storiesBackend);
-        window.location = './stories.html';
-        stories = JSON.parse(response.stories);
+        const stories = JSON.parse(response.stories);
         console.log(stories);
+        window.location = './stories.html';
       }
   },
   error : function(response) {
