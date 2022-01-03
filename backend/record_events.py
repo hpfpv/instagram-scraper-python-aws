@@ -21,7 +21,8 @@ def lambda_handler(event, context):
     record = {
         "requestId" : { "S": requestId },
         "time" : { "S": time },
-        "account" : { "S": account_to_mention }
+        "account" : { "S": account_to_mention },
+        "completed": { "BOOL": False},
     }
 
     log["message"] = json.dumps(record)
