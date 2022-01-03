@@ -203,6 +203,7 @@ function sleep(ms) {
 
 function stop(){
   sessionStorage.clear();
+  localStorage.clear();
   window.location = './index.html';
 }
 
@@ -254,10 +255,11 @@ function retrieveStories(requestId) {
       if (response.stories == '[]'){
         window.location = './nothing.html';
       } else {
+        // storiesBackend = '{{response.stories | tojson}}'
+        // stories = JSON.parse(storiesBackend);
         stories = JSON.parse(response.stories);
         console.log(stories);
         window.location = './stories.html';
-        setup();
       }
   },
   error : function(response) {
