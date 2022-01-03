@@ -28,7 +28,7 @@ def retrieveStories(requestId):
                 }
             }
         )
-        if response['Item']['completed']['BOOL']:
+        if response['Item']['completed']['BOOL'] == True:
             loop = False
         else:
             time.sleep(10)
