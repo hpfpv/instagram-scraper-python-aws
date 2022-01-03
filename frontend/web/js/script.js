@@ -201,6 +201,11 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function stop(){
+  sessionStorage.clear();
+  window.location = './index.html';
+}
+
 function initStories() {
   if (sessionStorage.getItem('account_to_mention')==null){
     var account_to_mention = document.getElementById('account_to_mention').value;
@@ -219,9 +224,9 @@ function initStories() {
       // if (response.statusCode == '202'){
       requestId = response.requestId;
       console.log("requestId", requestId);
-      workumber +=1;
-      if (workumber = 1){
+      if (workumber = 0){
         work_in_progress();
+        workumber +=1;
       }
       sleep(60000).then(() => {
         retrieveStories(requestId);
@@ -249,7 +254,7 @@ function retrieveStories(requestId) {
         window.location = './nothing.html';
       } else {
         stories = response.stories;
-        console.log("stories");
+        console.log(stories);
         window.location = './stories.html';
         setup();
       }
