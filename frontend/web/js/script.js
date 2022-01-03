@@ -230,8 +230,8 @@ function initStories() {
       // if (response.statusCode == '202'){
       requestId = response.requestId;
       console.log("requestId", requestId);
-      console.log("workumber", workumber);
-      workumber +=1;
+      console.log("worknumber", worknumber);
+      worknumber +=1;
       if (worknumber <= 1){
         work_in_progress();
       }
