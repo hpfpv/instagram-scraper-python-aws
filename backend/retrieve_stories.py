@@ -37,7 +37,9 @@ def lambda_handler(event, context):
     loop = True
     while loop:
         items = retrieveStories(requestId)
+        log["message"] = json.dumps(items)
         if items["stories"] :
+            logger.info(json.dumps(log))
             loop = False
             return {
                 'statusCode': 200,
