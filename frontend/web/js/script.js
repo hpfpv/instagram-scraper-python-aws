@@ -229,7 +229,6 @@ function initStories() {
 
 function retrieveStories(requestId) {
   var retrieveStoriesApi = apiEndpoint + requestId;
-  console.log("requestId", requestId);
   $.ajax({
   url : retrieveStoriesApi,
   type : 'GET',
