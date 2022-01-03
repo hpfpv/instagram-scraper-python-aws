@@ -96,6 +96,7 @@ Resources:
             Stream: !GetAtt EventsTable.StreamArn
             StartingPosition: TRIM_HORIZON
             BatchSize: 10
+            MaximumRetryAttempts: 2
       Policies:
         - Version: "2012-10-17"
           Statement:
