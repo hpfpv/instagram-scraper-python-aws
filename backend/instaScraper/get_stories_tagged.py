@@ -28,80 +28,8 @@ def get_followers_stories_if_mentionned(account_to_mention):
     instance = get_instance()
 
     # Get stories of followers
-    stories = get_followers_stories(instance, account_to_mention)
-
-    current_date_time = datetime.now().strftime("%d-%m-%Y-%H:%M:%S")
-
-    # Check for newest stories and save them when mentionned
-    dir = "instaScraper/tagged-stories/"
-    new_stories = check_for_new_stories(stories, account_to_mention)
-    response = []
-    if new_stories["status"] == True:
-        log["message"] = "New stories found"
-        logger.info(json.dumps(log))
-        for x in [current_date_time, "latest"]:
-            filekey = dir + x + ".json"
-            s3.put_object(Bucket=bucket, Key=filekey, Body=str(json.dumps(new_stories["body"])))
-        response = new_stories["body"]
-        return {
-                "status": True, 
-                "body": response
-            }
-    else:
-        log["message"] = "No new stories"
-        logger.info(json.dumps(log))
-        return {
-                "status": False, 
-                "body": response
-            }
-def formated_response_json(stories):
-    logger.info(stories)
-    response = []
-    if(stories["status"] == True):
-        for story in stories["body"]:
-            story_owner = story["node"]["owner"]["username"]
-            story_id = story["node"]["id"]
-            story_owner_profile_pic_url = story["node"]["owner"]["profile_pic_url"]
-            story_is_video = story["node"]["is_video"]
-            taken_at_timestamp = story["node"]["taken_at_timestamp"]
-            time = story_time_str(taken_at_timestamp)
-            if story_is_video:
-                story_video_url = story["node"]["video_resources"][0]["src"]
-                story_media_url = story_video_url
-                story_display_url = story["node"]["display_url"]
-                story_duration = story["node"]["video_duration"] * 1000
-            else:
-                story_video_url = ""
-                story_display_url = story["node"]["display_url"]
-                story_media_url = story_display_url
-                story_duration = 5000
-
-            profile_picture(story_owner_profile_pic_url, story_owner)
-            story_media(story_video_url, story_display_url, story_is_video, story_id)
-
-            data = {
-                'story_id': story_id,
-                'story_time': time,
-                'user': story_owner,
-                # "story_owner_profile_pic_url": story_owner_profile_pic_url,
-                # 'path_to_profile_pic': path_to_profile_pic,
-                'is_video': story_is_video,
-                "story_media_url": story_media_url,
-                'media': story_id,
-                'time': story_duration
-            }
-            response.append(data)
-        logger.info(response)
-    return json.dumps(response)
-
-def lambda_handler(event, context):
-    logger.info(event)
-    for record in event ['Records']:
-        if record['eventName'] == 'INSERT':
-            requestId = record['dynamodb']['NewImage']['requestId']['S']
-            account_to_mention = record['dynamodb']['NewImage']['account']['S']
-            # stories = get_followers_stories_if_mentionned(account_to_mention)
-            stories = [
+    # stories = get_followers_stories(instance, account_to_mention)
+    stories = [
                 {
                 "node":{
                     "audience":"MediaAudience.DEFAULT",
@@ -192,6 +120,78 @@ def lambda_handler(event, context):
                     "node_type":"StoryItem"
                 }
                 }, {"node": {"audience": "MediaAudience.DEFAULT", "__typename": "GraphStoryImage", "id": "2730293655191842125", "dimensions": {"height": 1334, "width": 750}, "display_resources": [{"src": "https://instagram.fcoo1-1.fna.fbcdn.net/v/t51.2885-15/sh0.08/e35/p640x640/268445457_1367745210331147_8589600088301699084_n.jpg?_nc_ht=instagram.fcoo1-1.fna.fbcdn.net&_nc_cat=107&_nc_ohc=Qqq-1z9oObUAX89hiy3&edm=AHlfZHwBAAAA&ccb=7-4&oh=00_AT-C7JrYZlTWjG2FMHg8x37sE6b_-TW6AQ7YrRpYxAWKdg&oe=61BE5903&_nc_sid=21929d", "config_width": 640, "config_height": 1138}, {"src": "https://instagram.fcoo1-1.fna.fbcdn.net/v/t51.2885-15/e35/268445457_1367745210331147_8589600088301699084_n.jpg?_nc_ht=instagram.fcoo1-1.fna.fbcdn.net&_nc_cat=107&_nc_ohc=Qqq-1z9oObUAX89hiy3&edm=AHlfZHwBAAAA&ccb=7-4&oh=00_AT_y_YXEgUGimKvcGolnonas6ysyd5sIrTaC-CBa7CmXIw&oe=61BDCF1B&_nc_sid=21929d", "config_width": 750, "config_height": 1334}, {"src": "https://instagram.fcoo1-1.fna.fbcdn.net/v/t51.2885-15/e35/268445457_1367745210331147_8589600088301699084_n.jpg?_nc_ht=instagram.fcoo1-1.fna.fbcdn.net&_nc_cat=107&_nc_ohc=Qqq-1z9oObUAX89hiy3&edm=AHlfZHwBAAAA&ccb=7-4&oh=00_AT_y_YXEgUGimKvcGolnonas6ysyd5sIrTaC-CBa7CmXIw&oe=61BDCF1B&_nc_sid=21929d", "config_width": 1080, "config_height": 1920}], "display_url": "https://instagram.fcoo1-1.fna.fbcdn.net/v/t51.2885-15/e35/268445457_1367745210331147_8589600088301699084_n.jpg?_nc_ht=instagram.fcoo1-1.fna.fbcdn.net&_nc_cat=107&_nc_ohc=Qqq-1z9oObUAX89hiy3&edm=AHlfZHwBAAAA&ccb=7-4&oh=00_AT_y_YXEgUGimKvcGolnonas6ysyd5sIrTaC-CBa7CmXIw&oe=61BDCF1B&_nc_sid=21929d", "media_preview": "ABgq5qiiigAooooAKKKKACiiigAooooAKKKKAP/Z", "gating_info": None, "fact_check_overall_rating": None, "fact_check_information": None, "sharing_friction_info": {"should_have_sharing_friction": False, "bloks_app_url": None}, "media_overlay_info": None, "sensitivity_friction_info": None, "taken_at_timestamp": 1639696382, "expiring_at_timestamp": 1639782782, "story_cta_url": None, "story_view_count": None, "is_video": False, "owner": {"id": "255391219", "profile_pic_url": "https://instagram.fcoo1-2.fna.fbcdn.net/v/t51.2885-19/s150x150/69239464_2715622995147419_7869939009076592640_n.jpg?_nc_ht=instagram.fcoo1-2.fna.fbcdn.net&_nc_cat=111&_nc_ohc=a9xERC0RLVoAX81oZty&edm=AHlfZHwBAAAA&ccb=7-4&oh=00_AT86OB_d0-AzZQ8hEYoPkAVfF12zbZdgxk7HCSD2OLikQA&oe=61C251BA&_nc_sid=21929d", "username": "hpfpv", "followed_by_viewer": False, "requested_by_viewer": False}, "tracking_token": "eyJ2ZXJzaW9uIjo1LCJwYXlsb2FkIjp7ImlzX2FuYWx5dGljc190cmFja2VkIjp0cnVlLCJ1dWlkIjoiZmQ3NGI2ZTFlZTM1NDE2M2E2YTIzNzM5N2IzOTJmM2YyNzMwMjkzNjU1MTkxODQyMTI1Iiwic2VydmVyX3Rva2VuIjoiMTYzOTY5OTMwMjU3OHwyNzMwMjkzNjU1MTkxODQyMTI1fDUwNzU0MjIyNzA3fDY1MTRkNjUyZGRiZDNhZmNiMWVlZTdhMzIwZmIyYTg1YzNmOTNhMGM4ZjYzMTlhYzQ3Y2IwZTk2OGY5MmU1YTUifSwic2lnbmF0dXJlIjoiIn0=", "tappable_objects": [{"__typename": "GraphTappableMention", "x": 0.5, "y": 0.27811094452773605, "width": 0.32007999999999903, "height": 0.044977511244377, "rotation": 0.0, "custom_title": None, "attribution": None, "username": "229eaglemotion", "full_name": "229eaglemotion", "is_private": False}], "story_app_attribution": None, "edge_media_to_sponsor_user": {"edges": []}, "muting_info": None}, "instaloader": {"version": "4.8.2", "node_type": "StoryItem"}}, {"node": {"audience": "MediaAudience.DEFAULT", "__typename": "GraphStoryImage", "id": "2729916333045328299", "dimensions": {"height": 1334, "width": 750}, "display_resources": [{"src": "https://instagram.fcoo1-2.fna.fbcdn.net/v/t51.2885-15/sh0.08/e35/p640x640/268430240_648286416303865_1516137624972219047_n.jpg?_nc_ht=instagram.fcoo1-2.fna.fbcdn.net&_nc_cat=101&_nc_ohc=pTOrC1zKXpsAX-dMaN0&edm=AHlfZHwBAAAA&ccb=7-4&oh=00_AT-IVvTdxXeE3zGN8XjiI8Irk74aRFrFdyyEliOxyO5g_Q&oe=61BE0FFA&_nc_sid=21929d", "config_width": 640, "config_height": 1138}, {"src": "https://instagram.fcoo1-2.fna.fbcdn.net/v/t51.2885-15/e35/268430240_648286416303865_1516137624972219047_n.jpg?_nc_ht=instagram.fcoo1-2.fna.fbcdn.net&_nc_cat=101&_nc_ohc=pTOrC1zKXpsAX-dMaN0&edm=AHlfZHwBAAAA&ccb=7-4&oh=00_AT8ftXSM2RiCuyRVgLv0OX1JWrFI3jqcLpONx8svLm27kA&oe=61BE5314&_nc_sid=21929d", "config_width": 750, "config_height": 1334}, {"src": "https://instagram.fcoo1-2.fna.fbcdn.net/v/t51.2885-15/e35/268430240_648286416303865_1516137624972219047_n.jpg?_nc_ht=instagram.fcoo1-2.fna.fbcdn.net&_nc_cat=101&_nc_ohc=pTOrC1zKXpsAX-dMaN0&edm=AHlfZHwBAAAA&ccb=7-4&oh=00_AT8ftXSM2RiCuyRVgLv0OX1JWrFI3jqcLpONx8svLm27kA&oe=61BE5314&_nc_sid=21929d", "config_width": 1080, "config_height": 1920}], "display_url": "https://instagram.fcoo1-2.fna.fbcdn.net/v/t51.2885-15/e35/268430240_648286416303865_1516137624972219047_n.jpg?_nc_ht=instagram.fcoo1-2.fna.fbcdn.net&_nc_cat=101&_nc_ohc=pTOrC1zKXpsAX-dMaN0&edm=AHlfZHwBAAAA&ccb=7-4&oh=00_AT8ftXSM2RiCuyRVgLv0OX1JWrFI3jqcLpONx8svLm27kA&oe=61BE5314&_nc_sid=21929d", "media_preview": "ABgq1aKKKACiiigAooooAKKKKACiiigAooooA//Z", "gating_info": None, "fact_check_overall_rating": None, "fact_check_information": None, "sharing_friction_info": {"should_have_sharing_friction": False, "bloks_app_url": None}, "media_overlay_info": None, "sensitivity_friction_info": None, "taken_at_timestamp": 1639651405, "expiring_at_timestamp": 1639737805, "story_cta_url": None, "story_view_count": None, "is_video": False, "owner": {"id": "255391219", "profile_pic_url": "https://instagram.fcoo1-2.fna.fbcdn.net/v/t51.2885-19/s150x150/69239464_2715622995147419_7869939009076592640_n.jpg?_nc_ht=instagram.fcoo1-2.fna.fbcdn.net&_nc_cat=111&_nc_ohc=a9xERC0RLVoAX81oZty&edm=AHlfZHwBAAAA&ccb=7-4&oh=00_AT86OB_d0-AzZQ8hEYoPkAVfF12zbZdgxk7HCSD2OLikQA&oe=61C251BA&_nc_sid=21929d", "username": "hpfpv", "followed_by_viewer": False, "requested_by_viewer": False}, "tracking_token": "eyJ2ZXJzaW9uIjo1LCJwYXlsb2FkIjp7ImlzX2FuYWx5dGljc190cmFja2VkIjp0cnVlLCJ1dWlkIjoiZmQ3NGI2ZTFlZTM1NDE2M2E2YTIzNzM5N2IzOTJmM2YyNzI5OTE2MzMzMDQ1MzI4Mjk5Iiwic2VydmVyX3Rva2VuIjoiMTYzOTY5OTMwMjU3N3wyNzI5OTE2MzMzMDQ1MzI4Mjk5fDUwNzU0MjIyNzA3fDhhZDQ2NzUwMzFlYTk5MDdjYmNlYTEyZWY5MDY1NWIxYjk3NmU0OTA1OTkxNzJmZTE5ZGEyYmQxOTM1ODUyNjkifSwic2lnbmF0dXJlIjoiIn0=", "tappable_objects": [{"__typename": "GraphTappableMention", "x": 0.5, "y": 0.42503748125937, "width": 0.32007999999999903, "height": 0.044977511244377, "rotation": 0.0, "custom_title": None, "attribution": None, "username": "229eaglemotion", "full_name": "229eaglemotion", "is_private": False}], "story_app_attribution": None, "edge_media_to_sponsor_user": {"edges": []}, "muting_info": None}, "instaloader": {"version": "4.8.2", "node_type": "StoryItem"}}]
+
+    current_date_time = datetime.now().strftime("%d-%m-%Y-%H:%M:%S")
+
+    # Check for newest stories and save them when mentionned
+    dir = "instaScraper/tagged-stories/"
+    new_stories = check_for_new_stories(stories, account_to_mention)
+    response = []
+    if new_stories["status"] == True:
+        log["message"] = "New stories found"
+        logger.info(json.dumps(log))
+        for x in [current_date_time, "latest"]:
+            filekey = dir + x + ".json"
+            s3.put_object(Bucket=bucket, Key=filekey, Body=str(json.dumps(new_stories["body"])))
+        response = new_stories["body"]
+        return {
+                "status": True, 
+                "body": response
+            }
+    else:
+        log["message"] = "No new stories"
+        logger.info(json.dumps(log))
+        return {
+                "status": False, 
+                "body": response
+            }
+def formated_response_json(stories):
+    logger.info(stories)
+    response = []
+    if(stories["status"] == True):
+        for story in stories["body"]:
+            story_owner = story["node"]["owner"]["username"]
+            story_id = story["node"]["id"]
+            story_owner_profile_pic_url = story["node"]["owner"]["profile_pic_url"]
+            story_is_video = story["node"]["is_video"]
+            taken_at_timestamp = story["node"]["taken_at_timestamp"]
+            time = story_time_str(taken_at_timestamp)
+            if story_is_video:
+                story_video_url = story["node"]["video_resources"][0]["src"]
+                story_media_url = story_video_url
+                story_display_url = story["node"]["display_url"]
+                story_duration = story["node"]["video_duration"] * 1000
+            else:
+                story_video_url = ""
+                story_display_url = story["node"]["display_url"]
+                story_media_url = story_display_url
+                story_duration = 5000
+
+            profile_picture(story_owner_profile_pic_url, story_owner)
+            story_media(story_video_url, story_display_url, story_is_video, story_id)
+
+            data = {
+                'story_id': story_id,
+                'story_time': time,
+                'user': story_owner,
+                # "story_owner_profile_pic_url": story_owner_profile_pic_url,
+                # 'path_to_profile_pic': path_to_profile_pic,
+                'is_video': story_is_video,
+                "story_media_url": story_media_url,
+                'media': story_id,
+                'time': story_duration
+            }
+            response.append(data)
+        logger.info(response)
+    return json.dumps(response)
+
+def lambda_handler(event, context):
+    logger.info(event)
+    for record in event ['Records']:
+        if record['eventName'] == 'INSERT':
+            requestId = record['dynamodb']['NewImage']['requestId']['S']
+            account_to_mention = record['dynamodb']['NewImage']['account']['S']
+            stories = get_followers_stories_if_mentionned(account_to_mention)
             srories_response = formated_response_json(stories)
 
             response = client.update_item(
