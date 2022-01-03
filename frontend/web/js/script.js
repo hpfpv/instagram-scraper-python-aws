@@ -204,6 +204,7 @@ function sleep(ms) {
 function stop(){
   sessionStorage.clear();
   localStorage.clear();
+  workumber = 0;
   window.location = './index.html';
 }
 
@@ -244,7 +245,6 @@ function initStories() {
   }
   });
 }
-
 
 function retrieveStories(requestId) {
   var retrieveStoriesApi = apiEndpoint + requestId;
