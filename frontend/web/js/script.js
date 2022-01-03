@@ -230,6 +230,7 @@ function initStories() {
       // if (response.statusCode == '202'){
       requestId = response.requestId;
       console.log("requestId", requestId);
+      console.log("workumber", workumber);
       if (workumber = 0){
         work_in_progress();
         workumber +=1;
@@ -259,9 +260,9 @@ function retrieveStories(requestId) {
       if (response.stories == '[]'){
         window.location = './nothing.html';
       } else {
-        // storiesBackend = '{{response.stories | tojson}}'
-        // stories = JSON.parse(storiesBackend);
-        const stories = JSON.parse(JSON.stringify(response.stories));
+        storiesBackend = '{{response.stories | tojson}}'
+        stories = JSON.parse(storiesBackend);
+        // const stories = JSON.parse(JSON.stringify(response.stories));
         console.log(stories);
         window.location = './stories.html';
       }
