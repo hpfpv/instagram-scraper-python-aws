@@ -201,7 +201,7 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function initStories() {
+function initStories() {
   if (sessionStorage.getItem('account_to_mention')==null){
     var account_to_mention = document.getElementById('account_to_mention').value;
     sessionStorage.setItem('account_to_mention', account_to_mention)
@@ -223,8 +223,10 @@ async function initStories() {
       if (workumber = 1){
         work_in_progress();
       }
-      await sleep(60000);
-      retrieveStories(requestId);
+      sleep(60000).then(() => {
+        retrieveStories(requestId);
+      });
+      
       // } else {
       //   window.location = './nothing.html';
       // }
