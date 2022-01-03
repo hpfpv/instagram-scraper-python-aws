@@ -123,7 +123,7 @@ Resources:
                 - 's3:DeleteObject'
               Resource:
                 - !GetAtt 'storiesBucket.Arn'
-                - 'Fn::GetAtt' [!ImportValue instastories-houessou-com-website-webBucket, 'Arn']
+                - Fn::GetAtt: [!ImportValue instastories-houessou-com-website-webBucket, 'Arn']
                 - !Join ['', [!GetAtt 'storiesBucket.Arn', '/*']]
     
   retrieveStories:
