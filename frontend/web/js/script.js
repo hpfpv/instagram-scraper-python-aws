@@ -202,10 +202,14 @@ function sleep(ms) {
 }
 
 function stop(){
+  clearStorage();
+  window.location = './index.html';
+}
+
+function clearStorage(){
   sessionStorage.clear();
   localStorage.clear();
   workumber = 0;
-  window.location = './index.html';
 }
 
 function initStories() {
@@ -257,7 +261,8 @@ function retrieveStories(requestId) {
       } else {
         // storiesBackend = '{{response.stories | tojson}}'
         // stories = JSON.parse(storiesBackend);
-        const stories = JSON.parse(response)['stories'];
+        const storiestemp = JSON.parse(response);
+        const stories = storiestemp['stories'];
         console.log(stories);
         window.location = './stories.html';
       }
