@@ -98,8 +98,8 @@ Resources:
             StartingPosition: TRIM_HORIZON
             BatchSize: 10
             MaximumRetryAttempts: 1
-            FilterCriteria: 
-              - Pattern: {\"Filters\": [{\"Pattern\": {\"eventName\": [\"INSERT\"]}}]}
+            # FilterCriteria: 
+            #   - Pattern: {\"Filters\": [{\"Pattern\": {\"eventName\": [\"INSERT\"]}}]}
       Policies:
         - Version: "2012-10-17"
           Statement:
