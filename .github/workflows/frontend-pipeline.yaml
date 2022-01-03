@@ -5,7 +5,7 @@ on:
     push:
         branches: [ master ]
         paths:
-          - 'frontend/web/**'
+          - 'frontend/**'
     
 jobs:
   build-and-deploy:
