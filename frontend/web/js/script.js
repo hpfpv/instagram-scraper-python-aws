@@ -197,14 +197,20 @@ function work_in_progress() {
 }
 
 function initStories() {
-  var account_to_mention = localStorage.getItem('account_to_mention')
+  if (sessionStorage.getItem('account_to_mention')==null){
+    var account_to_mention = document.getElementById('account_to_mention').value;
+    sessionStorage.setItem('account_to_mention', account_to_mention)
+  }else {
+    var account_to_mention = sessionStorage.getItem('account_to_mention')
+  }
+  console.log("Account to mention", account_to_mention);
+  
   var initStoriesApi = apiEndpoint + account_to_mention + '/stories';
 
   $.ajax({
   url : initStoriesApi,
   type : 'GET',
   success : function(response) {
-      console.log("Account to mention", account_to_mention);
       // if (response.statusCode == '202'){
       requestId = response.requestId;
       console.log("requestId", requestId);
