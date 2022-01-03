@@ -41,21 +41,17 @@ def lambda_handler(event, context):
     log["function"] = "retrieve_stories"
 
     requestId = event['pathParameters']['requestId']
-    loop = True
-    while loop:
-        items = retrieveStories(requestId)
-        log["message"] = json.dumps(items)
-        logger.info(log)
-        if items["stories"] :
-            logger.info(json.dumps(log))
-            loop = False
-            return {
-                'statusCode': 200,
-                'headers': {
-                    'Access-Control-Allow-Origin': 'https://todo.houessou.com',
-                    'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
-                    'Access-Control-Allow-Methods': 'GET',
-                    'Content-Type': 'application/json'
-                },
-                'body': items
-            }
+    items = retrieveStories(requestId)
+    log["message"] = json.dumps(items)
+    logger.info(log)
+        
+    return {
+        'statusCode': 200,
+        'headers': {
+            'Access-Control-Allow-Origin': 'https://todo.houessou.com',
+            'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+            'Access-Control-Allow-Methods': 'GET',
+            'Content-Type': 'application/json'
+        },
+        'body': items
+    }
