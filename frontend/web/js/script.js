@@ -205,14 +205,14 @@ function initStories() {
   type : 'GET',
   success : function(response) {
       console.log("Account to mention", account_to_mention);
-      if (response.status == '202'){
+      // if (response.statusCode == '202'){
         requestId = JSON.parse(response.requestId);
         console.log("requestId", requestId);
         work_in_progress();
         setTimeout(retrieveStories(requestId), 100000);
-      } else {
-        window.location = './nothing.html';
-      }
+      // } else {
+      //   window.location = './nothing.html';
+      // }
   },
   error : function(response) {
       console.log("An error occured while initiating the request");
