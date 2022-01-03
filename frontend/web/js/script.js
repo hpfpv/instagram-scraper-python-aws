@@ -1,6 +1,6 @@
 const apiEndpoint = 'https://iscacd5zck.execute-api.us-east-1.amazonaws.com/dev/';
 // let stories;
-let workumber = 0;
+let worknumber;
 
 const story_container = document.querySelector('.display_all')
 const nextButton = document.querySelector('#next')
@@ -231,9 +231,9 @@ function initStories() {
       requestId = response.requestId;
       console.log("requestId", requestId);
       console.log("workumber", workumber);
-      if (workumber = 0){
+      workumber +=1;
+      if (worknumber <= 1){
         work_in_progress();
-        workumber +=1;
       }
       sleep(60000).then(() => {
         retrieveStories(requestId);
@@ -261,6 +261,7 @@ function retrieveStories(requestId) {
         window.location = './nothing.html';
       } else {
         storiesBackend = '{{response.stories | tojson}}'
+        console.log(storiesBackend);
         stories = JSON.parse(storiesBackend);
         // const stories = JSON.parse(JSON.stringify(response.stories));
         console.log(stories);
