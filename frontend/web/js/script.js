@@ -257,9 +257,9 @@ function retrieveStories(requestId) {
       } else {
         // storiesBackend = '{{response.stories | tojson}}'
         // stories = JSON.parse(storiesBackend);
+        window.location = './stories.html';
         stories = JSON.parse(response.stories);
         console.log(stories);
-        window.location = './stories.html';
       }
   },
   error : function(response) {
