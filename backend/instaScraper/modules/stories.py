@@ -17,6 +17,8 @@ from urllib.request import urlopen
 import urllib.request as compat_urllib_request
 from io import BytesIO
 
+import boto3
+import botocore
 import os
 import json
 from collections import defaultdict
@@ -25,6 +27,7 @@ import logging
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
+
 
 @cache(seconds=300)
 def get_followers(instance, account_to_mention):
@@ -97,6 +100,9 @@ def check_for_new_stories(stories, account_to_mention):
     print(json.dumps(log))
     logger.info(json.dumps(log))
 
+    bucket = os.environ['STORIES_BUCKET']
+    s3 = boto3.client('s3')
+
     dir = "instaScraper/tagged-stories/"
     result = 0
     response = []
@@ -109,14 +115,20 @@ def check_for_new_stories(stories, account_to_mention):
                 for x in storyItemJson["node"]["tappable_objects"]:
                     if x["__typename"] == "GraphTappableMention":
                         if x["username"] == account_to_mention:
-                            file = dir + ".temp/" + owner + "-" + id + ".json"
-                            if os.path.exists(file) == False:
-                                result += 1
-                                f = open(file, "w")
-                                f.write(json.dumps(storyItemJson))
-                                f.close()
-                                response.append(storyItemJson)
+                            filekey = dir + ".temp/" + owner + "-" + id + ".json"
+                            try:
+                                s3.get_object(Bucket=bucket, Key=filekey)
+                            except botocore.exceptions.ClientError as e:
+                                if e.response['Error']['Code'] == "404":
+                                    # The object does not exist.
+                                    result += 1
+                                    s3.put_object(Bucket=bucket, Key=filekey, Body=str(json.dumps(storyItemJson)))
+                                    response.append(storyItemJson)
+                                # else:
+                                #     # Something else has gone wrong.
+                                #     raise
                             else:
+                                # The object does exist.
                                 # print(f"Story Item {id} from username {owner} has already been processed")
                                 # logger.info(f"Story Item {id} from username {owner} has already been processed")
                                 pass
@@ -159,18 +171,9 @@ def story_time_str(story_time_taken):
     minutes = int((((timeago / (24 * 3600) - day) * 24) - hour) * 60)
     if day > 0 :
         response += f"{day}d"
-        # if hour > 0:
-        #     if hour == 1:
-        #         response += f", {hour} hour"
-        #     else:
-        #         response += f", {hour} hours"
-        # if minutes > 0:
-        #     response += f", {minutes} min"
     else:
         if hour > 0:
             response += f"{hour}h"
-            # if minutes > 0:
-            #     response += f", {minutes} min"
         else:
             response += f"{minutes}m"
 

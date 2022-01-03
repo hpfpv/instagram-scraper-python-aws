@@ -7,6 +7,12 @@ Globals:
     Runtime: python3.8
 
 Resources:
+  storiesBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: !Sub "hpf-${AWS::StackName}-data"
+
   EventsTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -82,6 +88,7 @@ Resources:
       Environment: 
         Variables:
           EVENTS_TABLE: !Ref EventsTable
+          STORIES_BUCKET: !Ref storiesBucket
       Events:
         DynamoDBStreams:
           Type: DynamoDB
@@ -106,6 +113,15 @@ Resources:
                 - 'dynamodb:ListTables'
               Resource: '*'
               Condition: {}
+            - Effect: Allow
+              Action: 
+                - 's3:PutObject'
+                - 's3:GetObject'
+                - 's3:ListBucket'
+                - 's3:DeleteObject'
+              Resource:
+                - !GetAtt 'storiesBucket.Arn'
+                - !Join ['', [!GetAtt 'storiesBucket.Arn', '/*']]
     
   retrieveStories:
     Type: AWS::Serverless::Function

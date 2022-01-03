@@ -197,7 +197,7 @@ function work_in_progress() {
 }
 
 function initStories() {
-  var account_to_mention = document.getElementById('account_to_mention').value;
+  var account_to_mention = localStorage.getItem('account_to_mention')
   var initStoriesApi = apiEndpoint + account_to_mention +'/stories';
 
   $.ajax({
