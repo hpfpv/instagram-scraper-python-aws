@@ -237,8 +237,9 @@ function initStories() {
       // }
   },
   error : function(response) {
-      // window.location = './error.html';
       console.log("An error occured while initiating the request");
+      window.location = './error.html';
+      document.getElementById('options_error_text').innerHTML = "An error occured while initiating the request. Please try again later."
   }
   });
 }
@@ -253,15 +254,16 @@ function retrieveStories(requestId) {
       if (response.stories == '[]'){
         window.location = './nothing.html';
       } else {
-        stories = response.stories;
+        stories = JSON.parse(response.stories);
         console.log(stories);
         window.location = './stories.html';
         setup();
       }
   },
   error : function(response) {
-      // window.location = './error.html';
-      console.log("An error occured while retriving stories");
+    console.log("An error occured while initiating the request");
+    window.location = './error.html';
+    document.getElementById('options_error_text').innerHTML = "An error occured while retrieving stories. Please try again later."
   }
   });
 }
