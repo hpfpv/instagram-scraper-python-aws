@@ -206,10 +206,10 @@ function initStories() {
   success : function(response) {
       console.log("Account to mention", account_to_mention);
       // if (response.statusCode == '202'){
-        requestId = JSON.parse(response.requestId);
-        console.log("requestId", requestId);
-        work_in_progress();
-        setTimeout(retrieveStories(requestId), 100000);
+      requestId = response.requestId;
+      console.log("requestId", requestId);
+      work_in_progress();
+      setTimeout(retrieveStories(requestId), 30000);
       // } else {
       //   window.location = './nothing.html';
       // }
