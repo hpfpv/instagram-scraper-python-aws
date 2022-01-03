@@ -2,13 +2,13 @@ import boto3
 import json
 import os
 import logging
+import time
 
 client = boto3.client('dynamodb', region_name='us-east-1')
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 def getDocumentJson(item):
-    logger.info(item)
     doc = {}
     doc["requestId"] = item["requestId"]["S"]
     doc["time"] = item["time"]["S"]
@@ -17,14 +17,20 @@ def getDocumentJson(item):
     return doc
 
 def retrieveStories(requestId):
-    response = client.get_item(
-        TableName=os.environ['EVENTS_TABLE'],
-        Key={
-            'requestId': {
-                'S': requestId
+    loop = True
+    while loop:
+        response = client.get_item(
+            TableName=os.environ['EVENTS_TABLE'],
+            Key={
+                'requestId': {
+                    'S': requestId
+                }
             }
-        }
-    )
+        )
+        if response['Item']['stories']['S']:
+            loop = False
+        else:
+            time.sleep(10)
     response = getDocumentJson(response["Item"])
     return json.dumps(response)
 
@@ -39,6 +45,7 @@ def lambda_handler(event, context):
     while loop:
         items = retrieveStories(requestId)
         log["message"] = json.dumps(items)
+        logger.info(log)
         if items["stories"] :
             logger.info(json.dumps(log))
             loop = False
