@@ -257,7 +257,7 @@ function retrieveStories(requestId) {
       } else {
         // storiesBackend = '{{response.stories | tojson}}'
         // stories = JSON.parse(storiesBackend);
-        const stories = JSON.parse(response.stories);
+        const stories = JSON.parse(response)['stories'];
         console.log(stories);
         window.location = './stories.html';
       }
