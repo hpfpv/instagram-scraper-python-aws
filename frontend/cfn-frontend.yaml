@@ -68,6 +68,10 @@ Resources:
 
 Outputs:
   webBucket:
+    Value: !GetAtt 'webBucket.Arn' 
+    Export:
+      Name: !Sub "${AWS::StackName}-webBucket-arn"
+  webBucketArn:
     Value: !Ref 'webBucket' 
     Export:
       Name: !Sub "${AWS::StackName}-webBucket"
