@@ -90,7 +90,7 @@ def formated_response_json(stories):
             }
             response.append(data)
         logger.info(response)
-    return response
+    return json.dumps(response)
 
 def lambda_handler(event, context):
     logger.info(event)
@@ -115,6 +115,6 @@ def lambda_handler(event, context):
             )
             response = {}
             response["Update"] = "Success"
-            return json.dumps(response)
+            return response
             
 
