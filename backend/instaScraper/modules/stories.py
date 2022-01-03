@@ -145,6 +145,8 @@ def check_for_new_stories(stories, account_to_mention):
             logger.info(json.dumps(log))
             print (json.dumps(log))
             sys.exit(1)
+        except:
+            sys.exit(1)
     if result > 0:
         return {
                 "status": True, 
