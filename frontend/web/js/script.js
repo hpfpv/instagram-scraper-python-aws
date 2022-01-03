@@ -1,5 +1,6 @@
 const apiEndpoint = 'https://iscacd5zck.execute-api.us-east-1.amazonaws.com/dev/';
 let stories;
+let workumber = 0;
 
 const story_container = document.querySelector('.display_all')
 const nextButton = document.querySelector('#next')
@@ -196,7 +197,11 @@ function work_in_progress() {
   document.getElementById('option_init_form').classList.add('d-none');
 }
 
-function initStories() {
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function initStories() {
   if (sessionStorage.getItem('account_to_mention')==null){
     var account_to_mention = document.getElementById('account_to_mention').value;
     sessionStorage.setItem('account_to_mention', account_to_mention)
@@ -214,8 +219,12 @@ function initStories() {
       // if (response.statusCode == '202'){
       requestId = response.requestId;
       console.log("requestId", requestId);
-      work_in_progress();
-      setTimeout(retrieveStories(requestId), 30000);
+      workumber +=1;
+      if (workumber = 1){
+        work_in_progress();
+      }
+      await sleep(60000);
+      retrieveStories(requestId);
       // } else {
       //   window.location = './nothing.html';
       // }
@@ -227,6 +236,7 @@ function initStories() {
   });
 }
 
+
 function retrieveStories(requestId) {
   var retrieveStoriesApi = apiEndpoint + requestId;
   $.ajax({
@@ -236,7 +246,8 @@ function retrieveStories(requestId) {
       if (response.stories == '[]'){
         window.location = './nothing.html';
       } else {
-        stories = JSON.parse(response.stories);
+        stories = response.stories;
+        console.log("stories");
         window.location = './stories.html';
         setup();
       }
