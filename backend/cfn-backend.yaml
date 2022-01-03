@@ -98,6 +98,10 @@ Resources:
             StartingPosition: TRIM_HORIZON
             BatchSize: 10
             MaximumRetryAttempts: 1
+            FilterCriteria: |
+              {
+                "eventName": ["INSERT"],
+              }
       Policies:
         - Version: "2012-10-17"
           Statement:
