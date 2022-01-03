@@ -198,7 +198,7 @@ function work_in_progress() {
 
 function initStories() {
   var account_to_mention = localStorage.getItem('account_to_mention')
-  var initStoriesApi = apiEndpoint + account_to_mention +'/stories';
+  var initStoriesApi = apiEndpoint + account_to_mention + '/stories';
 
   $.ajax({
   url : initStoriesApi,
@@ -223,12 +223,11 @@ function initStories() {
 
 function retrieveStories(requestId) {
   var retrieveStoriesApi = apiEndpoint + requestId;
-
+  console.log("requestId", requestId);
   $.ajax({
   url : retrieveStoriesApi,
   type : 'GET',
   success : function(response) {
-      console.log("requestId", requestId);
       if (response.stories == '[]'){
         window.location = './nothing.html';
       } else {
@@ -238,7 +237,7 @@ function retrieveStories(requestId) {
       }
   },
   error : function(response) {
-      window.location = './error.html';
+      // window.location = './error.html';
       console.log("An error occured while retriving stories");
   }
   });
