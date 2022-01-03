@@ -83,8 +83,6 @@ def formated_response_json(stories):
                 'story_id': story_id,
                 'story_time': time,
                 'user': story_owner,
-                # "story_owner_profile_pic_url": story_owner_profile_pic_url,
-                # 'path_to_profile_pic': path_to_profile_pic,
                 'is_video': story_is_video,
                 "story_media_url": story_media_url,
                 'media': story_id,
@@ -92,7 +90,7 @@ def formated_response_json(stories):
             }
             response.append(data)
         logger.info(response)
-    return json.dumps(response)
+    return response
 
 def lambda_handler(event, context):
     logger.info(event)
@@ -118,14 +116,5 @@ def lambda_handler(event, context):
             response = {}
             response["Update"] = "Success"
             return json.dumps(response)
-            # return {
-            #     'statusCode': 200,
-            #     'headers': {
-            #         'Access-Control-Allow-Origin': 'https://instastories.houessou.com',
-            #         'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
-            #         'Access-Control-Allow-Methods': 'GET',
-            #         'Content-Type': 'application/json'
-            #     },
-            #     'body': json.dumps(response)
-            # }
+            
 
