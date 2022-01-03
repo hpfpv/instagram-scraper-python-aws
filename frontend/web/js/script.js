@@ -191,25 +191,54 @@ const setup = async () => {
   })
 }
 
-function getStoriesTagged() {
+function work_in_progress() {
+  document.getElementById('option_init_work_in_progress').classList.remove('d-none')
+  document.getElementById('option_init_form').classList.add('d-none');
+}
+
+function initStories() {
   var account_to_mention = document.getElementById('account_to_mention').value;
-  var getStoriesTaggedApi = apiEndpoint + account_to_mention +'/stories';
+  var initStoriesApi = apiEndpoint + account_to_mention +'/stories';
 
   $.ajax({
-  url : getStoriesTaggedApi,
+  url : initStoriesApi,
   type : 'GET',
   success : function(response) {
       console.log("Account to mention", account_to_mention);
-      if (response.status == '200'){
-        stories = JSON.parse(response);
-        window.location = './stories.html';
-        setup();
+      if (response.status == '202'){
+        requestId = JSON.parse(response.requestId);
+        console.log("requestId", requestId);
+        work_in_progress();
+        setTimeout(retrieveStories(requestId), 100000);
       } else {
         window.location = './nothing.html';
       }
   },
   error : function(response) {
-      console.log("could not stories");
+      console.log("An error occured while initiating the request");
+      window.location = './error.html';
+  }
+  });
+}
+
+function retrieveStories(requestId) {
+  var retrieveStoriesApi = apiEndpoint + requestId;
+
+  $.ajax({
+  url : retrieveStoriesApi,
+  type : 'GET',
+  success : function(response) {
+      console.log("requestId", requestId);
+      if (response.stories == '[]'){
+        window.location = './nothing.html';
+      } else {
+        stories = JSON.parse(response.stories);
+        window.location = './stories.html';
+        setup();
+      }
+  },
+  error : function(response) {
+      console.log("An error occured while retriving stories");
       window.location = './error.html';
   }
   });

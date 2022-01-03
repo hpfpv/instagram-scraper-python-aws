@@ -106,6 +106,36 @@ Resources:
                 - 'dynamodb:ListTables'
               Resource: '*'
               Condition: {}
+    
+  retrieveStories:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: retrieve_stories.lambda_handler
+      Environment: 
+        Variables:
+          EVENTS_TABLE: !Ref EventsTable
+      Events:
+        retrieveStoriesApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref MainHttpApi
+            Path: /{requestId}
+            Method: GET
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - 'dynamodb:Query'
+                - 'dynamodb:GetItem'
+              Resource:
+                - !GetAtt EventsTable.Arn
+            - Effect: 'Allow'
+              Action:
+                - 'dynamodb:ListTables'
+              Resource: '*'
+              Condition: {}
 
 Outputs:
   MainHttpApi:
