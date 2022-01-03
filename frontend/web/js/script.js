@@ -209,7 +209,7 @@ function stop(){
 function clearStorage(){
   sessionStorage.clear();
   localStorage.clear();
-  workumber = 0;
+  worknumber = 0;
 }
 
 function initStories() {
