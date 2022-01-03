@@ -8,6 +8,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 def getDocumentJson(item):
+    logger.info(item)
     doc = {}
     doc["requestId"] = item["requestId"]["S"]
     doc["time"] = item["time"]["S"]
