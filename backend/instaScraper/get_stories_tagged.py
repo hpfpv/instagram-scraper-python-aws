@@ -8,6 +8,7 @@ import boto3
 import json
 from datetime import datetime
 import logging
+import sys
 
 client = boto3.client('dynamodb', region_name='us-east-1')
 logger = logging.getLogger()
@@ -109,7 +110,11 @@ def lambda_handler(event, context):
         if record['eventName'] == 'INSERT':
             requestId = record['dynamodb']['NewImage']['requestId']['S']
             account_to_mention = record['dynamodb']['NewImage']['account']['S']
-            stories = get_followers_stories_if_mentionned(account_to_mention)
+            try:
+                stories = get_followers_stories_if_mentionned(account_to_mention)
+            except Exception as e:
+                logger.info(e)
+                sys.exit(1)
             stories_response = formated_response_json(stories)
 
             response = client.update_item(
