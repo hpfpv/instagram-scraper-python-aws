@@ -117,12 +117,12 @@ def check_for_new_stories(stories, account_to_mention):
                     if x["__typename"] == "GraphTappableMention":
                         if x["username"] == account_to_mention:
                             taggedStoriesJson.append(storyItemJson)
-                            filekey = f"{dir}/{owner}-{id}.json"
-                            file = f"{owner}-{id}.json"
+                            filekey = f"{dir}/{owner}/{id}.json"
+                            file = f"{id}.json"
                             try:
-                                s3.get_object(Bucket=webbucket, Key=filekey)
+                                s3.head_object(Bucket=webbucket, Key=filekey)
                             except botocore.exceptions.ClientError as e:
-                                if e.response['Error']['Code'] == "404":
+                                if int(e.response['Error']['Code']) == 404:
                                     # The object does not exist.
                                     result += 1
                                     f = open(file, "w")
@@ -153,9 +153,8 @@ def check_for_new_stories(stories, account_to_mention):
             log["message"] = str(err)
             logger.info(json.dumps(log))
             sys.exit(1)
-        except:
-            log["message"] = "server error"
-            logger.info(json.dumps(log))
+        except Exception as er:
+            logger.info(er)
             sys.exit(1)
     logger.info("tagged stories")
     logger.info(taggedStoriesJson)
