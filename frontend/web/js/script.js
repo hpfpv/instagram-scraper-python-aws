@@ -237,7 +237,7 @@ function initStories() {
         work_in_progress();
       }
       sleep(60000).then(() => {
-        console.log("retrieving stories");
+        console.log("retrieving stories 1");
         retrieveStories(requestId);
       });
       
@@ -258,8 +258,9 @@ function retrieveStories(requestId) {
   sessionStorage.setItem('retrieve_stories_completed', false)
   let loop = sessionStorage.getItem('retrieve_stories_completed');
   let i = 0;
-  console.log("retrieving stories");
+  console.log("retrieving stories 2");
   while (loop == false) {
+    console.log("retrieving stories 3");
     sleep(60000).then(() => {
       i+=1;
       console.log("retrieving stories attempt", i)
