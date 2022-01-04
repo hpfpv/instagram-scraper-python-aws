@@ -44,13 +44,16 @@ def get_followers_stories_if_mentionned(account_to_mention):
         logger.info(json.dumps(log))
         filekey = f"{dir}/{current_date_time}.json"
         file = f"{current_date_time}.json"
-        f = open(file, "w")
-        f.write(json.dumps(new_stories["body"]))
-        f.close()
-        data = {'key': filekey}
-        files = {'file': open(file, 'rb')}
-        s3file = requests.post(bucketurl, data, files)
-        os.remove(file)
+        s3.put_object(
+            Body=str(json.dumps(new_stories["body"])),
+            Bucket=webbucket,
+            Key=filekey,
+        )
+        # open(file, "w").write(json.dumps(new_stories["body"]))
+        # data = {'key': filekey}
+        # files = {'file': open(file, 'rb')}
+        # s3file = requests.post(bucketurl, data, files)
+        # os.remove(file)
         response = new_stories["body"]
         return {
                 "status": True, 
