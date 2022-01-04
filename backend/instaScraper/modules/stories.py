@@ -124,6 +124,7 @@ def check_for_new_stories(stories, account_to_mention):
                             except botocore.exceptions.ClientError as e:
                                 if int(e.response['Error']['Code']) == 404:
                                     # The object does not exist.
+                                    response.append(storyItemJson)
                                     result += 1
                                     s3.put_object(
                                         Body=str(json.dumps(storyItemJson)),
@@ -135,7 +136,6 @@ def check_for_new_stories(stories, account_to_mention):
                                     # files = {'file': open(file, 'rb')}
                                     # s3file = requests.post(bucketurl, data, files)
                                     # os.remove(file)
-                                    response.append(storyItemJson)
                                 else:
                                     logger.info("error accessing the s3 bucket. check bucket policy")
                                     logger.info(e.response['Error'])
@@ -161,6 +161,8 @@ def check_for_new_stories(stories, account_to_mention):
             sys.exit(1)
     logger.info("tagged stories")
     logger.info(taggedStoriesJson)
+    logger.info("result")
+    logger.info(result)
     if result > 0:
         final_response = {
                 "status": True, 
