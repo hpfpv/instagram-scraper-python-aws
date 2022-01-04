@@ -255,11 +255,12 @@ function initStories() {
 
 function retrieveStories(requestId) {
   var retrieveStoriesApi = apiEndpoint + requestId;
-  sessionStorage.setItem('retrieve_stories_completed', false)
+  sessionStorage.setItem('retrieve_stories_completed', 'false')
   let loop = sessionStorage.getItem('retrieve_stories_completed');
   let i = 0;
+  console.log(loop);
   console.log("retrieving stories 2");
-  while (loop == false) {
+  while (loop == 'false') {
     console.log("retrieving stories 3");
     sleep(60000).then(() => {
       i+=1;
@@ -271,7 +272,7 @@ function retrieveStories(requestId) {
           console.log("got stories")
           if (response.completed == true){
             console.log("stories completed successfully")
-            sessionStorage.setItem('retrieve_stories_completed', true)
+            sessionStorage.setItem('retrieve_stories_completed', 'true')
             // loop = false;
             if (response.stories == '[]'){
               window.location = './nothing.html';
@@ -290,6 +291,6 @@ function retrieveStories(requestId) {
       });
     });
   }
-  console.log("retrieving stories 3");
+  console.log("retrieving stories 4");
 }
 
