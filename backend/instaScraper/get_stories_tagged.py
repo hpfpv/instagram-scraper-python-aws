@@ -36,14 +36,14 @@ def get_followers_stories_if_mentionned(account_to_mention):
     current_date_time = datetime.now().strftime("%d-%m-%Y-%H:%M:%S")
 
     # Check for newest stories and save them when mentionned
-    dir = "data/logs/" + account_to_mention + "/"
+    dir = "data/logs/" + account_to_mention + "/all"
     new_stories = check_for_new_stories(stories, account_to_mention)
     response = []
     if new_stories["status"] == True:
         log["message"] = "New stories found"
         logger.info(json.dumps(log))
-        filekey = dir + current_date_time + ".json"
-        file = current_date_time + ".json"
+        filekey = f"{dir}/{current_date_time}.json"
+        file = f"{current_date_time}.json"
         f = open(file, "w")
         f.write(json.dumps(new_stories["body"]))
         f.close()
