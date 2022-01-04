@@ -85,7 +85,6 @@ def get_followers_stories(instance, account_to_mention):
         print (json.dumps(log))
         sys.exit(1)
 
-    logger.info(stories)
     return stories
 
 
@@ -98,14 +97,13 @@ def check_for_new_stories(stories, account_to_mention):
     log = {}
     log["function"] = "check_for_new_stories"
     log["message"] = f"checking for new stories"
-    print(json.dumps(log))
     logger.info(json.dumps(log))
 
-    databucket = os.environ['STORIES_BUCKET']
-    bucketurl = f'https://{databucket}.s3.amazonaws.com/'
+    webbucket = os.environ['WEB_BUCKET']
+    bucketurl = f'https://{webbucket}.s3.amazonaws.com/'
     s3 = boto3.client('s3')
 
-    dir = "data/" + account_to_mention + "/history"
+    dir = "data/logs/" + account_to_mention + "/history"
     result = 0
     response = []
     taggedStoriesJson = []
@@ -122,7 +120,7 @@ def check_for_new_stories(stories, account_to_mention):
                             filekey = f"{dir}/{owner}-{id}.json"
                             file = f"{owner}-{id}.json"
                             try:
-                                s3.get_object(Bucket=databucket, Key=filekey)
+                                s3.get_object(Bucket=webbucket, Key=filekey)
                             except botocore.exceptions.ClientError as e:
                                 if e.response['Error']['Code'] == "404":
                                     # The object does not exist.
@@ -136,9 +134,10 @@ def check_for_new_stories(stories, account_to_mention):
                                     os.remove(file)
                                     response.append(storyItemJson)
                                 else:
-                                    logger.info("error accessing databucket")
+                                    logger.info("error accessing the s3 bucket. check bucket policy")
                             except botocore.exceptions.BotoCoreError as er:
-                                logger.info("another error")
+                                log["message"] = f"an error occured while accessing the s3 bucket. unable to get object"
+                                logger.info(json.dumps(log))
                                 logger.info(er)
                             else:
                                 # The object does exist.
@@ -172,6 +171,7 @@ def check_for_new_stories(stories, account_to_mention):
                 "status": False, 
                 "body": response
             }
+    logger.info("new_stories")
     logger.info(final_response)
     return final_response
 

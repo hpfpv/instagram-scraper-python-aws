@@ -18,8 +18,9 @@ def get_followers_stories_if_mentionned(account_to_mention):
         Stores story items data if featured account is mentionned
 
     """
-    databucket = os.environ['STORIES_BUCKET']
-    bucketurl = f'https://{databucket}.s3.amazonaws.com/'
+
+    webbucket = os.environ['WEB_BUCKET']
+    bucketurl = f'https://{webbucket}.s3.amazonaws.com/'
     s3 = boto3.client('s3')
 
     log = {}
@@ -35,24 +36,21 @@ def get_followers_stories_if_mentionned(account_to_mention):
     current_date_time = datetime.now().strftime("%d-%m-%Y-%H:%M:%S")
 
     # Check for newest stories and save them when mentionned
-    dir = "data/" + account_to_mention + "/"
+    dir = "data/logs/" + account_to_mention + "/"
     new_stories = check_for_new_stories(stories, account_to_mention)
-    logger.info("new_stories")
-    logger.info(new_stories)
     response = []
     if new_stories["status"] == True:
         log["message"] = "New stories found"
         logger.info(json.dumps(log))
-        for x in [current_date_time, "latest"]:
-            filekey = dir + x + ".json"
-            file = x + ".json"
-            f = open(file, "w")
-            f.write(json.dumps(new_stories["body"]))
-            f.close()
-            data = {'key': filekey}
-            files = {'file': open(file, 'rb')}
-            s3file = requests.post(bucketurl, data, files)
-            os.remove(file)
+        filekey = dir + current_date_time + ".json"
+        file = current_date_time + ".json"
+        f = open(file, "w")
+        f.write(json.dumps(new_stories["body"]))
+        f.close()
+        data = {'key': filekey}
+        files = {'file': open(file, 'rb')}
+        s3file = requests.post(bucketurl, data, files)
+        os.remove(file)
         response = new_stories["body"]
         return {
                 "status": True, 

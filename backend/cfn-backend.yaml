@@ -7,11 +7,11 @@ Globals:
     Runtime: python3.8
 
 Resources:
-  storiesBucket:
-    Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
-    Properties:
-      BucketName: !Sub "hpf-${AWS::StackName}-data"
+  # storiesBucket:
+  #   Type: AWS::S3::Bucket
+  #   DeletionPolicy: Retain
+  #   Properties:
+  #     BucketName: !Sub "hpf-${AWS::StackName}-data"
 
   EventsTable:
     Type: AWS::DynamoDB::Table
@@ -88,7 +88,6 @@ Resources:
       Environment: 
         Variables:
           EVENTS_TABLE: !Ref EventsTable
-          STORIES_BUCKET: !Ref storiesBucket
           WEB_BUCKET: !ImportValue instastories-houessou-com-website-webBucket
       Events:
         DynamoDBStreams:
@@ -124,9 +123,8 @@ Resources:
                 - 's3:ListBucket'
                 - 's3:DeleteObject'
               Resource:
-                - !GetAtt 'storiesBucket.Arn'
                 - !ImportValue instastories-houessou-com-website-webBucket-arn 
-                - !Join ['', [!GetAtt 'storiesBucket.Arn', '/*']]
+                - !Join ['', [!ImportValue instastories-houessou-com-website-webBucket-arn, '/*']]
     
   retrieveStories:
     Type: AWS::Serverless::Function
