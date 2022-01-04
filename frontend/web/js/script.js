@@ -208,6 +208,12 @@ function clearStorage(){
   worknumber = 0;
 }
 
+function reload (){
+  sleep(600000).then(() => {
+    initStories();
+  });
+}
+
 function initStories() {
   if (sessionStorage.getItem('account_to_mention')==null){
     var account_to_mention = document.getElementById('account_to_mention').value;
