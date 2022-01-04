@@ -259,9 +259,10 @@ function retrieveStories(requestId) {
       if (response.stories == '[]'){
         window.location = './nothing.html';
       } else {
+        window.location = './stories.html';
         const stories = JSON.parse(response.stories);
         console.log(stories);
-        window.location = './stories.html';
+        setup();
       }
   },
   error : function(response) {
