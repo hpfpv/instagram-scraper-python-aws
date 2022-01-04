@@ -125,13 +125,16 @@ def check_for_new_stories(stories, account_to_mention):
                                 if int(e.response['Error']['Code']) == 404:
                                     # The object does not exist.
                                     result += 1
-                                    f = open(file, "w")
-                                    f.write(json.dumps(storyItemJson))
-                                    f.close()
-                                    data = {'key': filekey}
-                                    files = {'file': open(file, 'rb')}
-                                    s3file = requests.post(bucketurl, data, files)
-                                    os.remove(file)
+                                    s3.put_object(
+                                        Body=str(json.dumps(storyItemJson)),
+                                        Bucket=webbucket,
+                                        Key=filekey,
+                                    )
+                                    # open(file, "w").write(json.dumps(storyItemJson))
+                                    # data = {'key': filekey}
+                                    # files = {'file': open(file, 'rb')}
+                                    # s3file = requests.post(bucketurl, data, files)
+                                    # os.remove(file)
                                     response.append(storyItemJson)
                                 else:
                                     logger.info("error accessing the s3 bucket. check bucket policy")
