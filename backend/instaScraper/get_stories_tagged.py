@@ -37,6 +37,8 @@ def get_followers_stories_if_mentionned(account_to_mention):
     # Check for newest stories and save them when mentionned
     dir = "data/" + account_to_mention + "/"
     new_stories = check_for_new_stories(stories, account_to_mention)
+    logger.info("new_stories")
+    logger.info(new_stories)
     response = []
     if new_stories["status"] == True:
         log["message"] = "New stories found"
@@ -64,7 +66,6 @@ def get_followers_stories_if_mentionned(account_to_mention):
                 "body": response
             }
 def formated_response_json(stories):
-    logger.info(stories)
     response = []
     if(stories["status"] == True):
         for story in stories["body"]:
