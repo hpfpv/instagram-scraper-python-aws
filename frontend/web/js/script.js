@@ -254,9 +254,10 @@ function initStories() {
 
 function retrieveStories(requestId) {
   var retrieveStoriesApi = apiEndpoint + requestId;
-  let loop = true;
+  sessionStorage.setItem('retrieve_stories_completed', false)
+  let loop = sessionStorage.getItem('retrieve_stories_completed');
   let i = 0;
-  while (loop == true) {
+  while (loop == false) {
     i+=1;
     console.log("retrieving stories attempt", i)
     $.ajax({
@@ -266,7 +267,8 @@ function retrieveStories(requestId) {
         console.log("got stories")
         if (response.completed == true){
           console.log("stories completed successfully")
-          loop = false;
+          sessionStorage.setItem('retrieve_stories_completed', true)
+          // loop = false;
           if (response.stories == '[]'){
             window.location = './nothing.html';
           } else {
