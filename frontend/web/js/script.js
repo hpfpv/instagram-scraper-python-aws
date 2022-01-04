@@ -2,10 +2,6 @@ const apiEndpoint = 'https://iscacd5zck.execute-api.us-east-1.amazonaws.com/dev/
 // let stories;
 let worknumber;
 
-const story_container = document.querySelector('.display_all')
-const nextButton = document.querySelector('#next')
-const backButton = document.querySelector('#back')
-
 function Storyfier(storiesArray, rootEl) {
 this.stories = storiesArray
 this.root = rootEl
@@ -142,8 +138,6 @@ this.render()
 }
 
 const setup = async () => {
-  stories = JSON.parse(sessionStorage.getItem("stories"));
-  console.log(stories);
   is_video = true;
   const loadVideos = stories.map(({ media }) => {
   return new Promise((resolve, reject) => {
@@ -236,7 +230,7 @@ function initStories() {
       if (worknumber <= 1){
         work_in_progress();
       }
-      sleep(60000).then(() => {
+      sleep(10000).then(() => {
         retrieveStories(requestId);
       });
       
@@ -263,7 +257,6 @@ function retrieveStories(requestId) {
       } else {
         sessionStorage.setItem('stories', response.stories)
         window.location = './stories.html';
-        setup();
       }
   },
   error : function(response) {
