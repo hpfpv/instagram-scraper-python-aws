@@ -122,7 +122,7 @@ def check_for_new_stories(stories, account_to_mention):
                             try:
                                 s3.get_object(Bucket=webbucket, Key=filekey)
                             except botocore.exceptions.ClientError as e:
-                                if e.response['Error']['Code'] == "404":
+                                if e.response['Error']['Code'] == "NoSuchKey":
                                     # The object does not exist.
                                     result += 1
                                     f = open(file, "w")
@@ -135,12 +135,7 @@ def check_for_new_stories(stories, account_to_mention):
                                     response.append(storyItemJson)
                                 else:
                                     logger.info("error accessing the s3 bucket. check bucket policy")
-                                    logger.info(e.response['Error']['Code'])
                                     logger.info(e.response['Error'])
-                            except botocore.exceptions.BotoCoreError as er:
-                                log["message"] = f"an error occured while accessing the s3 bucket. unable to get object"
-                                logger.info(json.dumps(log))
-                                logger.info(er)
                             else:
                                 # The object does exist.
                                 # print(f"Story Item {id} from username {owner} has already been processed")
