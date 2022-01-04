@@ -255,12 +255,17 @@ function initStories() {
 function retrieveStories(requestId) {
   var retrieveStoriesApi = apiEndpoint + requestId;
   let loop = true;
-  while (loop) {
+  let i = 0;
+  while (loop == true) {
+    i+=1;
+    console.log("retrieving stories attempt", i)
     $.ajax({
       url : retrieveStoriesApi,
       type : 'GET',
       success : function(response) {
+        console.log("got stories")
         if (response.completed == true){
+          console.log("stories completed successfully")
           loop = false;
           if (response.stories == '[]'){
             window.location = './nothing.html';
