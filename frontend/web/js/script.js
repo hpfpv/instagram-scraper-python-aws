@@ -236,12 +236,18 @@ function initStories() {
       if (worknumber <= 1){
         work_in_progress();
       }
-      let checkloop = true;
-      while (checkloop == true){}
+      let completed = false;
+      while (completed == false){}
       sleep(60000).then(() => {
-        checkloop = retrieveStories(requestId);
+        let resp_stories = retrieveStories(requestId);
+        completed = resp_stories.completed;
       });
-      
+      if (resp_stories.stories == '[]'){
+        window.location = './nothing.html';
+      } else {
+        sessionStorage.setItem('stories', resp_stories.stories)
+        window.location = './stories.html';
+      }
       // } else {
       //   window.location = './nothing.html';
       // }
@@ -255,27 +261,20 @@ function initStories() {
 }
 
 function retrieveStories(requestId) {
-  let loop = false;
   var retrieveStoriesApi = apiEndpoint + requestId;
+  let fetchStories;
   $.ajax({
     url : retrieveStoriesApi,
     type : 'GET',
     success : function(response) {
-      loop = false;
-      if (response.stories == '[]'){
-        window.location = './nothing.html';
-      } else {
-        sessionStorage.setItem('stories', response.stories)
-        window.location = './stories.html';
-      }
+      fetchStories = response;
     },
     error : function(response) {
-      loop = true;
       console.log("An error occured while retrieving stories");
-      // window.location = './error.html';
-      // sessionStorage.setItem("options_error_text", "An error occured while retrieving stories. Please try again later.");
+      window.location = './error.html';
+      sessionStorage.setItem("options_error_text", "An error occured while retrieving stories. Please try again later.");
     }
   });
-  return loop;
+  return fetchStories;
 }
 
