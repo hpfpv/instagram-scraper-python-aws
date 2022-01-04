@@ -108,13 +108,11 @@ def check_for_new_stories(stories, account_to_mention):
     dir = "data/" + account_to_mention + "/history"
     result = 0
     response = []
-    storiesJson = []
     taggedStoriesJson = []
     for story in stories:
         try:
             for storyItem in story.get_items():
                 storyItemJson  = structures.get_json_structure(storyItem)
-                storiesJson.append(storyItemJson)
                 owner = str(storyItemJson["node"]["owner"]["username"])
                 id = str(storyItemJson["node"]["id"])
                 for x in storyItemJson["node"]["tappable_objects"]:
@@ -137,9 +135,11 @@ def check_for_new_stories(stories, account_to_mention):
                                     s3file = requests.post(bucketurl, data, files)
                                     os.remove(file)
                                     response.append(storyItemJson)
-                                # else:
-                                #     # Something else has gone wrong.
-                                #     raise
+                                else:
+                                    logger.info("error accessing databucket")
+                            except botocore.exceptions.BotoCoreError as er:
+                                logger.info("another error")
+                                logger.info(er)
                             else:
                                 # The object does exist.
                                 # print(f"Story Item {id} from username {owner} has already been processed")
@@ -160,8 +160,6 @@ def check_for_new_stories(stories, account_to_mention):
             sys.exit(1)
         except:
             sys.exit(1)
-    logger.info("all stories")
-    logger.info(storiesJson)
     logger.info("tagged stories")
     logger.info(taggedStoriesJson)
     if result > 0:
