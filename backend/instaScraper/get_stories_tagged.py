@@ -3,6 +3,7 @@ from instaScraper.modules.stories import get_followers_stories, check_for_new_st
 from instaScraper.modules.download import profile_picture, story_media
 
 import os
+import requests
 import boto3
 import json
 from datetime import datetime
@@ -12,14 +13,15 @@ client = boto3.client('dynamodb', region_name='us-east-1')
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-bucket = os.environ['STORIES_BUCKET']
-s3 = boto3.client('s3')
-
 def get_followers_stories_if_mentionned(account_to_mention):
     """
         Stores story items data if featured account is mentionned
 
     """
+    databucket = os.environ['STORIES_BUCKET']
+    bucketurl = f'https://{databucket}.s3.amazonaws.com/'
+    s3 = boto3.client('s3')
+
     log = {}
     log["function"] = "get_followers_stories_if_mentionned"
 
@@ -41,7 +43,14 @@ def get_followers_stories_if_mentionned(account_to_mention):
         logger.info(json.dumps(log))
         for x in [current_date_time, "latest"]:
             filekey = dir + x + ".json"
-            s3.put_object(Bucket=bucket, Key=filekey, Body=str(json.dumps(new_stories["body"])))
+            file = x + ".json"
+            f = open(file, "w")
+            f.write(json.dumps(new_stories["body"]))
+            f.close()
+            data = {'key': filekey}
+            files = {'file': open(file, 'rb')}
+            s3file = requests.post(bucketurl, data, files)
+            os.remove(file)
         response = new_stories["body"]
         return {
                 "status": True, 
