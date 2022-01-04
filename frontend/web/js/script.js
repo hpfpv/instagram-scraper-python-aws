@@ -143,6 +143,7 @@ this.render()
 
 const setup = async () => {
   stories = JSON.parse(sessionStorage.getItem("stories"));
+  console.log(stories);
   is_video = true;
   const loadVideos = stories.map(({ media }) => {
   return new Promise((resolve, reject) => {
