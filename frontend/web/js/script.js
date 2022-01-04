@@ -141,7 +141,7 @@ this.currentTime = this.intervals[this.currentIndex]
 this.render()
 }
 
-const setup = async () => {
+const setup = async (stories) => {
   is_video = true;
   const loadVideos = stories.map(({ media }) => {
   return new Promise((resolve, reject) => {
@@ -262,7 +262,7 @@ function retrieveStories(requestId) {
         window.location = './stories.html';
         const stories = JSON.parse(response.stories);
         console.log(stories);
-        setup();
+        setup(stories);
       }
   },
   error : function(response) {
