@@ -236,7 +236,7 @@ function initStories() {
       if (worknumber <= 1){
         work_in_progress();
       }
-      sleep(120000).then(() => {
+      sleep(60000).then(() => {
         retrieveStories(requestId);
       });
       
@@ -258,33 +258,33 @@ function retrieveStories(requestId) {
   let loop = sessionStorage.getItem('retrieve_stories_completed');
   let i = 0;
   while (loop == false) {
-    i+=1;
-    console.log("retrieving stories attempt", i)
-    $.ajax({
-      url : retrieveStoriesApi,
-      type : 'GET',
-      success : function(response) {
-        console.log("got stories")
-        if (response.completed == true){
-          console.log("stories completed successfully")
-          sessionStorage.setItem('retrieve_stories_completed', true)
-          // loop = false;
-          if (response.stories == '[]'){
-            window.location = './nothing.html';
-          } else {
-            sessionStorage.setItem('stories', response.stories)
-            window.location = './stories.html';
-          }
-        }
-      },
-      error : function(response) {
-        loop = false;
-        console.log("An error occured while retrieving stories");
-        window.location = './error.html';
-        sessionStorage.setItem("options_error_text", "An error occured while retrieving stories. Please try again later.");
-      }
-    });
     sleep(60000).then(() => {
+      i+=1;
+      console.log("retrieving stories attempt", i)
+      $.ajax({
+        url : retrieveStoriesApi,
+        type : 'GET',
+        success : function(response) {
+          console.log("got stories")
+          if (response.completed == true){
+            console.log("stories completed successfully")
+            sessionStorage.setItem('retrieve_stories_completed', true)
+            // loop = false;
+            if (response.stories == '[]'){
+              window.location = './nothing.html';
+            } else {
+              sessionStorage.setItem('stories', response.stories)
+              window.location = './stories.html';
+            }
+          }
+        },
+        error : function(response) {
+          loop = false;
+          console.log("An error occured while retrieving stories");
+          window.location = './error.html';
+          sessionStorage.setItem("options_error_text", "An error occured while retrieving stories. Please try again later.");
+        }
+      });
     });
   }
 }
