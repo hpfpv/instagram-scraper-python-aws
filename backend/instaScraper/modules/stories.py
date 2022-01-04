@@ -135,6 +135,8 @@ def check_for_new_stories(stories, account_to_mention):
                                     response.append(storyItemJson)
                                 else:
                                     logger.info("error accessing the s3 bucket. check bucket policy")
+                                    logger.info(e.response['Error']['Code'])
+                                    logger.info(e.response['Error'])
                             except botocore.exceptions.BotoCoreError as er:
                                 log["message"] = f"an error occured while accessing the s3 bucket. unable to get object"
                                 logger.info(json.dumps(log))
