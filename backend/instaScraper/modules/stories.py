@@ -108,10 +108,12 @@ def check_for_new_stories(stories, account_to_mention):
     dir = "data/" + account_to_mention + "/history"
     result = 0
     response = []
+    storiesJson = []
     for story in stories:
         try:
             for storyItem in story.get_items():
                 storyItemJson  = structures.get_json_structure(storyItem)
+                storiesJson.append(storyItemJson)
                 owner = str(storyItemJson["node"]["owner"]["username"])
                 id = str(storyItemJson["node"]["id"])
                 for x in storyItemJson["node"]["tappable_objects"]:
@@ -156,6 +158,8 @@ def check_for_new_stories(stories, account_to_mention):
             sys.exit(1)
         except:
             sys.exit(1)
+    logger.info("all stories")
+    logger.info(storiesJson)
     if result > 0:
         final_response = {
                 "status": True, 
