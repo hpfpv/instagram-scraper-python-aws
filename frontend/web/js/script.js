@@ -290,5 +290,6 @@ function retrieveStories(requestId) {
       });
     });
   }
+  console.log("retrieving stories 3");
 }
 
