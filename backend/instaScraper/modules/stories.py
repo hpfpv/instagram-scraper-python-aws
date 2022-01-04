@@ -149,12 +149,13 @@ def check_for_new_stories(stories, account_to_mention):
                         # print(f"Story Item {id} has no mentions")
                         # logger.info(f"Story Item {id} has no mentions")
                         pass
-        except (Exceptions.LoginRequiredException, Exceptions.PrivateProfileNotFollowedException) as err:
+        except (Exceptions.LoginRequiredException, Exceptions.PrivateProfileNotFollowedException, Exceptions.ConnectionException, Exceptions.InstaloaderException) as err:
             log["message"] = str(err)
             logger.info(json.dumps(log))
-            print (json.dumps(log))
             sys.exit(1)
         except:
+            log["message"] = "server error"
+            logger.info(json.dumps(log))
             sys.exit(1)
     logger.info("tagged stories")
     logger.info(taggedStoriesJson)
