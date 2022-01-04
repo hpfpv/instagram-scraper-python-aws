@@ -17,7 +17,7 @@ bucketurl = f'https://{webbucket}.s3.amazonaws.com/'
 # @lru_cache(maxsize=128)
 def profile_picture(url, filename):
     logger.info('Start download profile')
-    dir = 'data/profile/'
+    dir = 'data/profile'
     filekey = f"{dir}/{filename}.jpg"
     file = f"{filename}.jpg"
     try:
@@ -40,7 +40,7 @@ def profile_picture(url, filename):
 # @lru_cache(maxsize=128)
 def story_media(video, display, is_video, filename):
     logger.info('Start download media')
-    dir = 'data/media/'
+    dir = 'data/media'
     video_filekey = f"{dir}/{filename}.mp4"
     display_filekey = f"{dir}/{filename}.jpg"
     video_file = f"{filename}.mp4"
