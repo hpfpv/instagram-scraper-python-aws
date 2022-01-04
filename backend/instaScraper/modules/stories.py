@@ -109,6 +109,7 @@ def check_for_new_stories(stories, account_to_mention):
     result = 0
     response = []
     storiesJson = []
+    taggedStoriesJson = []
     for story in stories:
         try:
             for storyItem in story.get_items():
@@ -119,6 +120,7 @@ def check_for_new_stories(stories, account_to_mention):
                 for x in storyItemJson["node"]["tappable_objects"]:
                     if x["__typename"] == "GraphTappableMention":
                         if x["username"] == account_to_mention:
+                            taggedStoriesJson.append(storyItemJson)
                             filekey = f"{dir}/{owner}-{id}.json"
                             file = f"{owner}-{id}.json"
                             try:
@@ -160,6 +162,8 @@ def check_for_new_stories(stories, account_to_mention):
             sys.exit(1)
     logger.info("all stories")
     logger.info(storiesJson)
+    logger.info("tagged stories")
+    logger.info(taggedStoriesJson)
     if result > 0:
         final_response = {
                 "status": True, 
