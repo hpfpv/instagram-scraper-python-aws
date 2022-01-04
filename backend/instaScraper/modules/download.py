@@ -21,9 +21,9 @@ def profile_picture(url, filename):
     filekey = f"{dir}/{filename}.jpg"
     file = f"{filename}.jpg"
     try:
-        s3.get_object(Bucket=webbucket, Key=filekey)
+        s3.head_object(Bucket=webbucket, Key=filekey)
     except botocore.exceptions.ClientError as e:
-        if e.response['Error']['Code'] == "404":
+        if int(e.response['Error']['Code']) == 404:
             # The object does not exist.
             localfile = requests.get(url, allow_redirects=True)
             open(file, 'wb').write(localfile.content)
@@ -44,9 +44,9 @@ def story_media(video, display, is_video, filename):
 
     if is_video:
         try:
-            s3.get_object(Bucket=webbucket, Key=video_filekey)
+            s3.head_object(Bucket=webbucket, Key=video_filekey)
         except botocore.exceptions.ClientError as e:
-            if e.response['Error']['Code'] == "404":
+            if int(e.response['Error']['Code']) == 404:
             # The object does not exist.
                 r = requests.get(video, allow_redirects=True)
                 open(video_filekey, 'wb').write(r.content)
@@ -63,9 +63,9 @@ def story_media(video, display, is_video, filename):
                 os.remove(display_file)
     else:
         try:
-            s3.get_object(Bucket=webbucket, Key=video_filekey)
+            s3.head_object(Bucket=webbucket, Key=video_filekey)
         except botocore.exceptions.ClientError as e:
-            if e.response['Error']['Code'] == "404":
+            if int(e.response['Error']['Code']) == 404:
             # The object does not exist.
                 r3 = requests.get(display, allow_redirects=True)
                 open(display_filekey, 'wb').write(r3.content)
