@@ -230,7 +230,7 @@ function initStories() {
       if (worknumber <= 1){
         work_in_progress();
       }
-      sleep(10000).then(() => {
+      sleep(60000).then(() => {
         retrieveStories(requestId);
       });
       
