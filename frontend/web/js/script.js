@@ -247,7 +247,7 @@ function initStories() {
   error : function(response) {
       console.log("An error occured while initiating the request");
       window.location = './error.html';
-      document.getElementById('options_error_text').innerHTML = "An error occured while initiating the request. Please try again later."
+      sessionStorage.setItem("options_error_text") = "An error occured while initiating the request. Please try again later.";
   }
   });
 }
@@ -268,7 +268,7 @@ function retrieveStories(requestId) {
   error : function(response) {
     console.log("An error occured while retrieving stories");
     window.location = './error.html';
-    document.getElementById('options_error_text').innerHTML = "An error occured while retrieving stories. Please try again later."
+    sessionStorage.setItem("options_error_text") = "An error occured while retrieving stories. Please try again later.";
   }
   });
 }

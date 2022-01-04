@@ -122,7 +122,7 @@ def check_for_new_stories(stories, account_to_mention):
                             try:
                                 s3.get_object(Bucket=webbucket, Key=filekey)
                             except botocore.exceptions.ClientError as e:
-                                if e.response['Error']['Code'] == "NoSuchKey":
+                                if e.response['Error']['Code'] == "404":
                                     # The object does not exist.
                                     result += 1
                                     f = open(file, "w")
