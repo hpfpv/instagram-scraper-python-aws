@@ -16,7 +16,7 @@ from urllib.parse import urlparse as compat_urllib_parse_urlparse
 from urllib.request import urlopen
 import urllib.request as compat_urllib_request
 from io import BytesIO
-
+import requests
 import boto3
 import botocore
 import os
@@ -100,7 +100,8 @@ def check_for_new_stories(stories, account_to_mention):
     print(json.dumps(log))
     logger.info(json.dumps(log))
 
-    bucket = os.environ['STORIES_BUCKET']
+    databucket = os.environ['STORIES_BUCKET']
+    bucketurl = f'https://{databucket}.s3.amazonaws.com/'
     s3 = boto3.client('s3')
 
     dir = "data/" + account_to_mention + "/history/"
@@ -116,13 +117,20 @@ def check_for_new_stories(stories, account_to_mention):
                     if x["__typename"] == "GraphTappableMention":
                         if x["username"] == account_to_mention:
                             filekey = dir + owner + "-" + id + ".json"
+                            file = owner + "-" + id + ".json"
                             try:
-                                s3.get_object(Bucket=bucket, Key=filekey)
+                                s3.get_object(Bucket=databucket, Key=filekey)
                             except botocore.exceptions.ClientError as e:
                                 if e.response['Error']['Code'] == "404":
                                     # The object does not exist.
                                     result += 1
-                                    s3.put_object(Bucket=bucket, Key=filekey, Body=str(json.dumps(storyItemJson)))
+                                    f = open(file, "w")
+                                    f.write(json.dumps(storyItemJson))
+                                    f.close()
+                                    data = {'key': filekey}
+                                    files = {'file': open(file, 'rb')}
+                                    s3file = requests.post(bucketurl, data, files)
+                                    os.remove(file)
                                     response.append(storyItemJson)
                                 # else:
                                 #     # Something else has gone wrong.
