@@ -125,7 +125,7 @@ def check_for_new_stories(stories, account_to_mention):
                                 if int(e.response['Error']['Code']) == 404:
                                     # The object does not exist.
                                     response.append(storyItemJson)
-                                    result += 1
+                                    result = 1
                                     s3.put_object(
                                         Body=str(json.dumps(storyItemJson)),
                                         Bucket=webbucket,
@@ -163,16 +163,21 @@ def check_for_new_stories(stories, account_to_mention):
     logger.info(taggedStoriesJson)
     logger.info("result")
     logger.info(result)
-    if result > 0:
-        final_response = {
-                "status": True, 
-                "body": response
-            }
+    final_response = {}
+    if result == 1:
+        status = True
+        # final_response = {
+        #         "status": True, 
+        #         "body": response
+        #     }
     else:
-        final_response = {
-                "status": False, 
-                "body": response
-            }
+        status = False
+        # final_response = {
+        #         "status": False, 
+        #         "body": response
+        #     }
+    final_response["status"] = status
+    final_response["body"] = response
     logger.info("new_stories")
     logger.info(final_response)
     return final_response
