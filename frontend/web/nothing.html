@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
     <link rel="shortcut icon" href="img/favicon.png" >
 </head>
-<body>
+<body onload="reload();">
     <div class="container-fluid" style="text-align: center">
         <a class="navbar-brand" href="#">
             <!-- <img src="img/logo.png" id="logo" align="center"/> -->
@@ -19,14 +19,13 @@
     </div>
     <br>
     <div class="options_nothing">
-        <div class="options_nothing_text">No stories to display.<br />Reload the page after 10 minutes at least.</div>
+        <div class="options_nothing_text">No stories to display.<br/><p>Will try retrieving new stories in 10 minutes. Or click the Reload button.</p></div>
           <br>
           <div class="options_button">
             <button class="btn btn-info" onclick="initStories();" >Reload</button>
             <button class="btn btn-danger" onclick="stop();">Stop</button> 
           </div>
     </div>
-
+    <script  src="js/script.js"></script>
 </body>
-<script  src="js/script.js"></script>
 </html>
