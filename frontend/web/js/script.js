@@ -141,7 +141,8 @@ this.currentTime = this.intervals[this.currentIndex]
 this.render()
 }
 
-const setup = async (stories) => {
+const setup = async () => {
+  stories = JSON.parse(sessionStorage.getItem("stories"));
   is_video = true;
   const loadVideos = stories.map(({ media }) => {
   return new Promise((resolve, reject) => {
@@ -259,10 +260,9 @@ function retrieveStories(requestId) {
       if (response.stories == '[]'){
         window.location = './nothing.html';
       } else {
+        sessionStorage.setItem('stories', response.stories)
         window.location = './stories.html';
-        const stories = JSON.parse(response.stories);
-        console.log(stories);
-        setup(stories);
+        setup();
       }
   },
   error : function(response) {
