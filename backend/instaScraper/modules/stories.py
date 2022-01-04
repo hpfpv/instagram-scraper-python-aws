@@ -84,7 +84,8 @@ def get_followers_stories(instance, account_to_mention):
         logger.info(json.dumps(log))
         print (json.dumps(log))
         sys.exit(1)
-    
+
+    logger.info(stories)
     return stories
 
 
@@ -104,7 +105,7 @@ def check_for_new_stories(stories, account_to_mention):
     bucketurl = f'https://{databucket}.s3.amazonaws.com/'
     s3 = boto3.client('s3')
 
-    dir = "data/" + account_to_mention + "/history/"
+    dir = "data/" + account_to_mention + "/history"
     result = 0
     response = []
     for story in stories:
@@ -116,8 +117,8 @@ def check_for_new_stories(stories, account_to_mention):
                 for x in storyItemJson["node"]["tappable_objects"]:
                     if x["__typename"] == "GraphTappableMention":
                         if x["username"] == account_to_mention:
-                            filekey = dir + owner + "-" + id + ".json"
-                            file = owner + "-" + id + ".json"
+                            filekey = f"{dir}/{owner}-{id}.json"
+                            file = f"{owner}-{id}.json"
                             try:
                                 s3.get_object(Bucket=databucket, Key=filekey)
                             except botocore.exceptions.ClientError as e:
@@ -156,16 +157,17 @@ def check_for_new_stories(stories, account_to_mention):
         except:
             sys.exit(1)
     if result > 0:
-        return {
+        final_response = {
                 "status": True, 
                 "body": response
             }
     else:
-        return {
+        final_response = {
                 "status": False, 
                 "body": response
             }
-
+    logger.info(final_response)
+    return final_response
 
 def story_time_str(story_time_taken):
     import time
