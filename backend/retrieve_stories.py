@@ -18,20 +18,20 @@ def getDocumentJson(item):
     return doc
 
 def retrieveStories(requestId):
-    loop = True
-    while loop:
-        response = client.get_item(
-            TableName=os.environ['EVENTS_TABLE'],
-            Key={
-                'requestId': {
-                    'S': requestId
-                }
+    # loop = True
+    # while loop:
+    response = client.get_item(
+        TableName=os.environ['EVENTS_TABLE'],
+        Key={
+            'requestId': {
+                'S': requestId
             }
-        )
-        if response['Item']['completed']['BOOL'] == True:
-            loop = False
-        else:
-            time.sleep(10)
+        }
+    )
+    # if response['Item']['completed']['BOOL'] == True:
+    #     loop = False
+    # else:
+    #     time.sleep(10)
     response = getDocumentJson(response["Item"])
     return json.dumps(response)
 
