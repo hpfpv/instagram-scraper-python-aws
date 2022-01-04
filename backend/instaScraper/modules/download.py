@@ -23,7 +23,7 @@ def profile_picture(url, filename):
     try:
         s3.get_object(Bucket=webbucket, Key=filekey)
     except botocore.exceptions.ClientError as e:
-        if e.response['Error']['Code'] == "404":
+        if e.response['Error']['Code'] == "NoSuchKey":
             # The object does not exist.
             localfile = requests.get(url, allow_redirects=True)
             open(file, 'wb').write(localfile.content)
@@ -46,7 +46,7 @@ def story_media(video, display, is_video, filename):
         try:
             s3.get_object(Bucket=webbucket, Key=video_filekey)
         except botocore.exceptions.ClientError as e:
-            if e.response['Error']['Code'] == "404":
+            if e.response['Error']['Code'] == "NoSuchKey":
             # The object does not exist.
                 r = requests.get(video, allow_redirects=True)
                 open(video_filekey, 'wb').write(r.content)
@@ -65,7 +65,7 @@ def story_media(video, display, is_video, filename):
         try:
             s3.get_object(Bucket=webbucket, Key=video_filekey)
         except botocore.exceptions.ClientError as e:
-            if e.response['Error']['Code'] == "404":
+            if e.response['Error']['Code'] == "NoSuchKey":
             # The object does not exist.
                 r3 = requests.get(display, allow_redirects=True)
                 open(display_filekey, 'wb').write(r3.content)
