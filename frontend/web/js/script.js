@@ -42,17 +42,17 @@ if (is_video){
   // this.root.style.background = ''
   this.root.querySelector('#story_image').classList.add("d-none")
   this.root.querySelector('#story_video').classList.remove("d-none")
-  this.root.querySelector('#story_video').src = "media/" + story.media + ".mp4"
-  this.root.querySelector('#story_image').poster = "media/" + story.media + ".jpg"
+  this.root.querySelector('#story_video').src = "data/media/" + story.media + ".mp4"
+  this.root.querySelector('#story_image').poster = "data/media/" + story.media + ".jpg"
   this.root.querySelector('#story_video').autoplay = true
 }
 else {
   this.root.querySelector('#story_video').classList.add("d-none")
   this.root.querySelector('#story_image').classList.remove("d-none")
-  this.root.querySelector('#story_image').src = "media/" + story.media + ".jpg"
+  this.root.querySelector('#story_image').src = "data/media/" + story.media + ".jpg"
 }
-this.root.querySelector('#story_avatar').style.backgroundImage = `url(profile/${story.user}.jpg)`
-this.root.querySelector('#story_avatar_big').src = "profile/" + story.user + ".jpg"
+this.root.querySelector('#story_avatar').style.backgroundImage = `url(data/profile/${story.user}.jpg)`
+this.root.querySelector('#story_avatar_big').src = "data/profile/" + story.user + ".jpg"
 this.root.querySelector('#story_time').innerHTML = story.story_time
 this.root.querySelector('#story_user').innerHTML = story.user
 }
@@ -145,7 +145,7 @@ const setup = async () => {
     // video.autoplay = true;
     // video.muted = true;
     video.playsInline = true;
-    video.src = "media/" + media + ".mp4"
+    video.src = "data/media/" + media + ".mp4"
     // video.controls = true;
     video.load();
 
@@ -170,7 +170,7 @@ const setup = async () => {
       img.onload = () => {
         resolve(media)
       }
-      img.src = "media/" + media + ".jpg" 
+      img.src = "data/media/" + media + ".jpg" 
     })
   })
   // await Promise.all(loadImages)
@@ -248,6 +248,7 @@ function initStories() {
       console.log("An error occured while initiating the request");
       window.location = './error.html';
       sessionStorage.setItem("options_error_text", "An error occured while initiating the request. Please try again later.");
+      sessionStorage.setItem("options_error_retry", "initStories();")
   }
   });
 }
@@ -279,6 +280,7 @@ function retrieveStories(requestId) {
       console.log("An error occured while retrieving stories");
       window.location = './error.html';
       sessionStorage.setItem("options_error_text", "An error occured while retrieving stories. Please try again later.");
+      sessionStorage.setItem("options_error_retry", "retrieveStories(requestId)")
     }
     });
 }
