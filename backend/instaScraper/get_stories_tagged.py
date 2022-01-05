@@ -1,6 +1,7 @@
 from instaScraper.modules.instance import get_instance
 from instaScraper.modules.stories import get_followers_stories, check_for_new_stories, story_time_str
 from instaScraper.modules.download import profile_picture, story_media
+from instaloader import exceptions as Exceptions
 
 import os
 import requests
@@ -28,11 +29,23 @@ def get_followers_stories_if_mentionned(account_to_mention):
     log["function"] = "get_followers_stories_if_mentionned"
 
     
-    # Create Instaloader Instance
-    instance = get_instance()
-
     # Get stories of followers
-    stories = get_followers_stories(instance, account_to_mention)
+    gotStories = False
+    while gotStories == False:
+    # Create Instaloader Instance
+        instance = get_instance()
+        try:
+            stories = get_followers_stories(instance, account_to_mention)
+        except (Exceptions.ConnectionException, Exceptions.BadCredentialsException, Exceptions.InvalidArgumentException) as err:
+            message = {
+                "function": "get_followers_stories_if_mentionned/get_stories",
+                "error": str(err),
+            }
+            logger.info(json.dumps(message))
+        else:
+            gotStories = True
+            logger.info(json.dumps("Followers stories ok"))
+    
 
     current_date_time = datetime.now().strftime("%d-%m-%Y-%H:%M:%S")
 

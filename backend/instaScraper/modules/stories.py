@@ -72,7 +72,6 @@ def get_followers_stories(instance, account_to_mention):
     log = {}
     log["function"] = "get_followers_stories"
     log["message"] = f"retriving account {account_to_mention} followers' stories"
-    print(json.dumps(log))
     logger.info(json.dumps(log))
 
     userIds = get_followers(instance, account_to_mention)
@@ -82,7 +81,6 @@ def get_followers_stories(instance, account_to_mention):
     except (Exceptions.ProfileNotExistsException) as err:
         log["message"] = str(err)
         logger.info(json.dumps(log))
-        print (json.dumps(log))
         sys.exit(1)
 
     return stories
