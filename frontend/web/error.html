@@ -22,14 +22,15 @@
         <div class="options_error_text" id="options_error_text"></div>
           <br>
           <div class="options_button">
-            <button class="btn btn-info" onclick="initStories();" >Retry</button>
-            <a href="./index.html"><button class="btn btn-danger">Start Over</button> </a>
+            <button class="btn btn-info" id="options_error_retry" >Retry</button>
+            <button class="btn btn-danger" onclick="stop();">Start Over</button> 
           </div>
     </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
     <script type="text/javascript" src="js/script.js"></script>
     <script>
         document.getElementById('options_error_text').innerHTML = sessionStorage.getItem("options_error_text");
+        document.getElementById('options_error_retry').onclick = sessionStorage.getItem("options_error_retry");
     </script>
 </body>
 </html>
