@@ -43,7 +43,7 @@ body {
         display: none;
     }
   }
-  @media only screen and (max-height: 764px) and (min-width: 480px) {
+  @media only screen and (max-height: 833px) and (min-width: 480px) {
     .story {
       width: 400px;
     }
