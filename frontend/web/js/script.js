@@ -284,6 +284,7 @@ function retrieveStories(requestId) {
           window.location = './stories.html';
         }
       }else{
+        console.log("stories still being proccessed by backend");
         sleep(60000).then(() => {
           retrieveStories(requestId);
         });
@@ -293,11 +294,9 @@ function retrieveStories(requestId) {
       sleep(60000).then(() => {
         retrieveStories(requestId);
       });
-      // loop = false;
-      console.log("stories still being proccessed by backend");
-      // window.location = './error.html';
-      // sessionStorage.setItem("options_error_text", "An error occured while retrieving stories. Please try again later.");
-      // sessionStorage.setItem("options_error_retry", "retrieveStories(requestId)")
+      window.location = './error.html';
+      sessionStorage.setItem("options_error_text", "An error occured while retrieving stories. Please try again later.");
+      sessionStorage.setItem("options_error_retry", "retrieveStories(requestId)")
     }
     });
 }
