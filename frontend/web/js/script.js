@@ -219,56 +219,52 @@ function initStories() {
     var account_to_mention = sessionStorage.getItem('account_to_mention')
   }
   console.log("Account to mention", account_to_mention);
-  
-  sleep(3000).then(() => {
-    const stor = [
-      {
-          "story_id": "2744057125774454818",
-          "story_time": "16h",
-          "user": "hpfpv",
-          "is_video": true,
-          "story_media_url": "https://scontent-iad3-2.cdninstagram.com/v/t50.12441-16/271439537_757098821916710_8192934091010385844_n.mp4?_nc_ht=scontent-iad3-2.cdninstagram.com&_nc_cat=102&_nc_ohc=PPyhCLQvkBkAX8g5Ryu&edm=AHlfZHwBAAAA&ccb=7-4&oe=61D85ACC&oh=00_AT93zNDzQ9amy4E8rrLACx4lVphiwkiBXtWaILbic47OUg&_nc_sid=21929d",
-          "media": "2744057125774454818",
-          "time": 10400
-      },
-      {
-          "story_id": "2744019491559617567",
-          "story_time": "17h",
-          "user": "hpfpv",
-          "is_video": true,
-          "story_media_url": "https://scontent-iad3-2.cdninstagram.com/v/t50.12441-16/271212401_2995249320727073_3365759509281053303_n.mp4?_nc_ht=scontent-iad3-2.cdninstagram.com&_nc_cat=105&_nc_ohc=ldPeFVY2ER0AX86wsIn&edm=AHlfZHwBAAAA&ccb=7-4&oe=61D7E466&oh=00_AT9M6tSvdjnvka8Bk-UEk_m71M38aGV1Exuyto9KxlVD_A&_nc_sid=21929d",
-          "media": "2744019491559617567",
-          "time": 10333
-      }
-    ]
-    const stor_str = JSON.stringify(stor)
-    sessionStorage.setItem('stories', stor_str)
-    window.location = './stories.html';
-  });
-  // var initStoriesApi = apiEndpoint + account_to_mention + '/stories';
 
-  // $.ajax({
-  // url : initStoriesApi,
-  // type : 'GET',
-  // success : function(response) {
-  //     // if (response.statusCode == '202'){
-  //     requestId = response.requestId;
-  //     console.log("requestId", requestId);
-  //     sleep(100000).then(() => {
-  //       retrieveStories(requestId);
-  //     });
-      
-  //     // } else {
-  //     //   window.location = './nothing.html';
-  //     // }
-  // },
-  // error : function(response) {
-  //     console.log("An error occured while initiating the request");
-  //     window.location = './error.html';
-  //     sessionStorage.setItem("options_error_text", "An error occured while initiating the request. Please try again later.");
-  //     sessionStorage.setItem("options_error_retry", "initStories();")
-  // }
+  // Use this section for testing purposes only
+  // sleep(3000).then(() => {
+  //   const stor = [
+  //     {
+  //         "story_id": "2744057125774454818",
+  //         "story_time": "16h",
+  //         "user": "hpfpv",
+  //         "is_video": true,
+  //         "story_media_url": "https://scontent-iad3-2.cdninstagram.com/v/t50.12441-16/271439537_757098821916710_8192934091010385844_n.mp4?_nc_ht=scontent-iad3-2.cdninstagram.com&_nc_cat=102&_nc_ohc=PPyhCLQvkBkAX8g5Ryu&edm=AHlfZHwBAAAA&ccb=7-4&oe=61D85ACC&oh=00_AT93zNDzQ9amy4E8rrLACx4lVphiwkiBXtWaILbic47OUg&_nc_sid=21929d",
+  //         "media": "2744057125774454818",
+  //         "time": 10400
+  //     },
+  //     {
+  //         "story_id": "2744019491559617567",
+  //         "story_time": "17h",
+  //         "user": "hpfpv",
+  //         "is_video": true,
+  //         "story_media_url": "https://scontent-iad3-2.cdninstagram.com/v/t50.12441-16/271212401_2995249320727073_3365759509281053303_n.mp4?_nc_ht=scontent-iad3-2.cdninstagram.com&_nc_cat=105&_nc_ohc=ldPeFVY2ER0AX86wsIn&edm=AHlfZHwBAAAA&ccb=7-4&oe=61D7E466&oh=00_AT9M6tSvdjnvka8Bk-UEk_m71M38aGV1Exuyto9KxlVD_A&_nc_sid=21929d",
+  //         "media": "2744019491559617567",
+  //         "time": 10333
+  //     }
+  //   ]
+  //   const stor_str = JSON.stringify(stor)
+  //   sessionStorage.setItem('stories', stor_str)
+  //   window.location = './stories.html';
   // });
+  var initStoriesApi = apiEndpoint + account_to_mention + '/stories';
+
+  $.ajax({
+  url : initStoriesApi,
+  type : 'GET',
+  success : function(response) {
+      requestId = response.requestId;
+      console.log("requestId", requestId);
+      sleep(100000).then(() => {
+        retrieveStories(requestId);
+      });
+  },
+  error : function(response) {
+      console.log("An error occured while initiating the request");
+      window.location = './error.html';
+      sessionStorage.setItem("options_error_text", "An error occured while initiating the request. Please try again later.");
+      sessionStorage.setItem("options_error_retry", "initStories();")
+  }
+  });
 }
 
 function retrieveStories(requestId) {
