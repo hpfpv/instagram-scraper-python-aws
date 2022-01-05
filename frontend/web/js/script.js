@@ -1,6 +1,5 @@
 const apiEndpoint = 'https://iscacd5zck.execute-api.us-east-1.amazonaws.com/dev/';
 // let stories;
-let worknumber;
 
 function Storyfier(storiesArray, rootEl) {
 this.stories = storiesArray
@@ -187,8 +186,7 @@ const setup = async () => {
 }
 
 function work_in_progress() {
-  document.getElementById('option_init_work_in_progress').classList.remove('d-none')
-  document.getElementById('option_init_form').classList.add('d-none');
+  document.getElementById('work_in_progress').classList.remove('d-none')
 }
 
 function sleep(ms) {
@@ -213,6 +211,7 @@ function reload (){
 }
 
 function initStories() {
+  work_in_progress();
   if (sessionStorage.getItem('account_to_mention')==null){
     var account_to_mention = document.getElementById('account_to_mention').value;
     sessionStorage.setItem('account_to_mention', account_to_mention)
@@ -221,34 +220,54 @@ function initStories() {
   }
   console.log("Account to mention", account_to_mention);
   
-  var initStoriesApi = apiEndpoint + account_to_mention + '/stories';
-
-  $.ajax({
-  url : initStoriesApi,
-  type : 'GET',
-  success : function(response) {
-      // if (response.statusCode == '202'){
-      requestId = response.requestId;
-      console.log("requestId", requestId);
-      worknumber +=1;
-      if (worknumber <= 1){
-        work_in_progress();
+  sleep(3000).then(() => {
+    const stor = [
+      {
+          "story_id": "2744057125774454818",
+          "story_time": "16h",
+          "user": "hpfpv",
+          "is_video": true,
+          "story_media_url": "https://scontent-iad3-2.cdninstagram.com/v/t50.12441-16/271439537_757098821916710_8192934091010385844_n.mp4?_nc_ht=scontent-iad3-2.cdninstagram.com&_nc_cat=102&_nc_ohc=PPyhCLQvkBkAX8g5Ryu&edm=AHlfZHwBAAAA&ccb=7-4&oe=61D85ACC&oh=00_AT93zNDzQ9amy4E8rrLACx4lVphiwkiBXtWaILbic47OUg&_nc_sid=21929d",
+          "media": "2744057125774454818",
+          "time": 10400
+      },
+      {
+          "story_id": "2744019491559617567",
+          "story_time": "17h",
+          "user": "hpfpv",
+          "is_video": true,
+          "story_media_url": "https://scontent-iad3-2.cdninstagram.com/v/t50.12441-16/271212401_2995249320727073_3365759509281053303_n.mp4?_nc_ht=scontent-iad3-2.cdninstagram.com&_nc_cat=105&_nc_ohc=ldPeFVY2ER0AX86wsIn&edm=AHlfZHwBAAAA&ccb=7-4&oe=61D7E466&oh=00_AT9M6tSvdjnvka8Bk-UEk_m71M38aGV1Exuyto9KxlVD_A&_nc_sid=21929d",
+          "media": "2744019491559617567",
+          "time": 10333
       }
-      sleep(100000).then(() => {
-        retrieveStories(requestId);
-      });
-      
-      // } else {
-      //   window.location = './nothing.html';
-      // }
-  },
-  error : function(response) {
-      console.log("An error occured while initiating the request");
-      window.location = './error.html';
-      sessionStorage.setItem("options_error_text", "An error occured while initiating the request. Please try again later.");
-      sessionStorage.setItem("options_error_retry", "initStories();")
-  }
+    ]
+    sessionStorage.setItem('stories', stor)
+    window.location = './stories.html';
   });
+  // var initStoriesApi = apiEndpoint + account_to_mention + '/stories';
+
+  // $.ajax({
+  // url : initStoriesApi,
+  // type : 'GET',
+  // success : function(response) {
+  //     // if (response.statusCode == '202'){
+  //     requestId = response.requestId;
+  //     console.log("requestId", requestId);
+  //     sleep(100000).then(() => {
+  //       retrieveStories(requestId);
+  //     });
+      
+  //     // } else {
+  //     //   window.location = './nothing.html';
+  //     // }
+  // },
+  // error : function(response) {
+  //     console.log("An error occured while initiating the request");
+  //     window.location = './error.html';
+  //     sessionStorage.setItem("options_error_text", "An error occured while initiating the request. Please try again later.");
+  //     sessionStorage.setItem("options_error_retry", "initStories();")
+  // }
+  // });
 }
 
 function retrieveStories(requestId) {
