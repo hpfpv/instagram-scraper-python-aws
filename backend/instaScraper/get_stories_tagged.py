@@ -112,8 +112,8 @@ def lambda_handler(event, context):
             account_to_mention = record['dynamodb']['NewImage']['account']['S']
             try:
                 stories = get_followers_stories_if_mentionned(account_to_mention)
-            except Exception as e:
-                logger.info(e)
+            except :
+                logger.info("server error")
                 sys.exit(1)
             stories_response = formated_response_json(stories)
 
