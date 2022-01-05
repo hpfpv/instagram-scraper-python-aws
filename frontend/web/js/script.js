@@ -159,9 +159,9 @@ const setup = async () => {
   })
   })
   if (is_video == true) {
-  // await Promise.all(loadVideos);
+  await Promise.all(loadVideos);
   } else {
-  is_video = false
+  is_video = false;
   const loadImages = stories.map(({ media }) => {
     return new Promise((resolve, reject) => {
       let img = document.getElementById('story_image');
@@ -171,7 +171,7 @@ const setup = async () => {
       img.src = "data/media/" + media + ".jpg" 
     })
   })
-  // await Promise.all(loadImages)
+  await Promise.all(loadImages);
   }
 
   const s = new Storyfier(stories, story_container);
@@ -234,7 +234,7 @@ function initStories() {
       if (worknumber <= 1){
         work_in_progress();
       }
-      sleep(60000).then(() => {
+      sleep(100000).then(() => {
         retrieveStories(requestId);
       });
       
