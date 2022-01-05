@@ -33,8 +33,8 @@ def get_followers_stories_if_mentionned(account_to_mention):
     gotStories = False
     while gotStories == False:
     # Create Instaloader Instance
-        instance = get_instance()
         try:
+            instance = get_instance()
             stories = get_followers_stories(instance, account_to_mention)
         except (Exceptions.ConnectionException, Exceptions.BadCredentialsException, Exceptions.InvalidArgumentException) as err:
             message = {
