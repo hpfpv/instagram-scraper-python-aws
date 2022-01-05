@@ -251,12 +251,12 @@ body {
     margin: 0 auto;
   }
   .options {
-    position:relative;
+    position: absolute;
     text-align: center;
     width: 200px;
     height: 200px;
     /* top:85%; */
-    transform: translate(-50%, -30%);
+    transform: translate(-50%, -70%);
     /* background-color:azure;
     border:1px solid; */
     padding: 10px;
