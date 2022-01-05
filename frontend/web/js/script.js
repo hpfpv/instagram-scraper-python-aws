@@ -276,11 +276,14 @@ function retrieveStories(requestId) {
       }
     },
     error : function(response) {
-      loop = false;
+      sleep(60000).then(() => {
+        retrieveStories(requestId);
+      });
+      // loop = false;
       console.log("An error occured while retrieving stories");
-      window.location = './error.html';
-      sessionStorage.setItem("options_error_text", "An error occured while retrieving stories. Please try again later.");
-      sessionStorage.setItem("options_error_retry", "retrieveStories(requestId)")
+      // window.location = './error.html';
+      // sessionStorage.setItem("options_error_text", "An error occured while retrieving stories. Please try again later.");
+      // sessionStorage.setItem("options_error_retry", "retrieveStories(requestId)")
     }
     });
 }
