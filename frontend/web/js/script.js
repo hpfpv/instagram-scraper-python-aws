@@ -241,7 +241,8 @@ function initStories() {
           "time": 10333
       }
     ]
-    sessionStorage.setItem('stories', stor)
+    const stor_str = JSON.stringify(stor)
+    sessionStorage.setItem('stories', stor_str)
     window.location = './stories.html';
   });
   // var initStoriesApi = apiEndpoint + account_to_mention + '/stories';
