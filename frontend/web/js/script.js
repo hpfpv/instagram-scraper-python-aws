@@ -151,12 +151,10 @@ const setup = async () => {
 
     video.addEventListener('canplaythrough', function(){
       resolve(video);
-      console.log(is_video)
     });
     video.addEventListener('error', function(){
       reject(video);
       is_video = false;
-      // console.log(is_video)
     })
   })
   })
@@ -260,10 +258,10 @@ function retrieveStories(requestId) {
     async: true,
     type : 'GET',
     success : function(response) {
-      console.log("got stories response")
       if (response.completed == true){
-        console.log("stories completed successfully")
+        console.log("stories retrieved successfully from backend")
         if (response.stories == '[]'){
+          console.log("no new stories found")
           window.location = './nothing.html';
         } else {
           sessionStorage.setItem('stories', response.stories)
@@ -280,7 +278,7 @@ function retrieveStories(requestId) {
         retrieveStories(requestId);
       });
       // loop = false;
-      console.log("An error occured while retrieving stories");
+      console.log("stories still being proccessed by backend");
       // window.location = './error.html';
       // sessionStorage.setItem("options_error_text", "An error occured while retrieving stories. Please try again later.");
       // sessionStorage.setItem("options_error_retry", "retrieveStories(requestId)")
