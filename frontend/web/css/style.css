@@ -51,13 +51,13 @@ body {
   }
   @media only screen and (max-height: 833px) and (min-width: 480px) {
     .story {
-      width: 450px;
+      width: 445px;
     }
     .story_video {
-      width: 450px;
+      width: 445px;
     }
     .story_image {
-      width: 450px;
+      width: 445px;
     }
   }
   @media only screen and (max-height: 764px) and (min-width: 480px) {
