@@ -284,7 +284,7 @@ function retrieveStories(requestId) {
           window.location = './stories.html';
         }
       }else{
-        console.log("stories still being proccessed by backend");
+        console.log("request still being proccessed by backend");
         sleep(60000).then(() => {
           retrieveStories(requestId);
         });
