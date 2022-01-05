@@ -14,8 +14,7 @@ def getDocumentJson(item):
     doc["time"] = item["time"]["S"]
     doc["account"] = item["account"]["S"]
     doc["completed"] = item["completed"]["BOOL"]
-    if item["stories"]["S"]:
-        doc["stories"] = item["stories"]["S"]
+    doc["stories"] = item["stories"]["S"]
     return doc
 
 def retrieveStories(requestId):
