@@ -41,7 +41,6 @@ def get_followers(instance, account_to_mention):
     log["function"] = "get_followers"
     log["message"] = "retrieving followers"
 
-    print(log)
     logger.info(log)
     try:
         profile = instaloader.Profile.from_username(instance.context, username=account_to_mention)
@@ -58,7 +57,6 @@ def get_followers(instance, account_to_mention):
 
     log["message"] = "followers ok"
 
-    print(log)
     logger.info(log)
 
     return userIds
