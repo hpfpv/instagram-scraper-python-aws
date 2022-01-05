@@ -51,35 +51,35 @@ body {
   }
   @media only screen and (max-height: 833px) and (min-width: 480px) {
     .story {
-      max-width: 445px;
+      width: 445px;
     }
     .story_video {
-      max-width: 445px;
+      width: 445px;
     }
     .story_image {
-      max-width: 445px;
+      width: 445px;
     }
   }
   @media only screen and (max-height: 764px) and (min-width: 480px) {
     .story {
-      max-width: 400px;
+      width: 400px;
     }
     .story_video {
-      max-width: 400px;
+      width: 400px;
     }
     .story_image {
-      max-width: 400px;
+      width: 400px;
     }
   }
   @media only screen and (max-height: 700px)  {
     .story {
-      max-width: 350px;
+      width: 350px;
     }
     .story_video {
-      max-width: 350px;
+      width: 350px;
     }
     .story_image {
-      max-width: 350px;
+      width: 350px;
     }
   }
   @media only screen and (min-width: 950px) {
@@ -256,7 +256,7 @@ body {
     width: 200px;
     height: 200px;
     /* top:85%; */
-    transform: translate(-50%, -40%);
+    transform: translate(-40%, -50%);
     /* background-color:azure;
     border:1px solid; */
     padding: 10px;
