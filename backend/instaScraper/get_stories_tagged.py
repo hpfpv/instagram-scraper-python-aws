@@ -31,17 +31,22 @@ def get_followers_stories_if_mentionned(account_to_mention):
     
     # Get stories of followers
     gotStories = False
+    maxretries = 0
     while gotStories == False:
     # Create Instaloader Instance
         try:
             instance = get_instance()
             stories = get_followers_stories(instance, account_to_mention)
         except (Exceptions.ConnectionException, Exceptions.BadCredentialsException, Exceptions.InvalidArgumentException) as err:
+            maxretries +=1
             message = {
-                "function": "get_followers_stories_if_mentionned/get_stories",
-                "error": str(err),
-            }
+                    "function": "get_followers_stories_if_mentionned/get_stories",
+                    "error": str(err),
+                }
             logger.info(json.dumps(message))
+            if maxretries == 2: 
+                logger.info("maximum attemps. stoping request now")
+                sys.exit(1)
         else:
             gotStories = True
             logger.info(json.dumps("Followers stories ok"))
