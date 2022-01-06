@@ -96,7 +96,7 @@ Resources:
             Stream: !GetAtt EventsTable.StreamArn
             StartingPosition: TRIM_HORIZON
             BatchSize: 10
-            MaximumRetryAttempts: 1
+            MaximumRetryAttempts: 0
             # FilterCriteria: 
             #   - Pattern: {\"Filters\": [{\"Pattern\": {\"eventName\": [\"INSERT\"]}}]}
       Policies:
