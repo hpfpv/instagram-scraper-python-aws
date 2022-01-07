@@ -128,26 +128,41 @@ def lambda_handler(event, context):
         if record['eventName'] == 'INSERT':
             requestId = record['dynamodb']['NewImage']['requestId']['S']
             account_to_mention = record['dynamodb']['NewImage']['account']['S']
-            
-            storiesJson = check_for_new_stories(account_to_mention)
-            
-            # stories_response = formated_response_json(stories)
 
-            response = client.update_item(
-                TableName=os.environ['EVENTS_TABLE'],
-                Key={
-                    'requestId': {
-                        'S': requestId,
+            try:
+                storiesJson = check_for_new_stories(account_to_mention)
+            except Exception as e:
+                logger.info(e)
+                response = client.update_item(
+                    TableName=os.environ['EVENTS_TABLE'],
+                    Key={
+                        'requestId': {
+                            'S': requestId,
+                        }
+                    },
+                    UpdateExpression="SET status = :s",
+                    ExpressionAttributeValues={
+                        ':s': {'S': "error"}
                     }
-                },
-                UpdateExpression="SET stories = :s, completed = :c",
-                ExpressionAttributeValues={
-                    ':s': {'S': storiesJson},
-                    ':c': {'BOOL': True}
-                }
-            )
-            response = {}
-            response["Update"] = "Success"
+                )
+                response = {}
+                response["Update"] = "Success"
+            else:
+                response = client.update_item(
+                    TableName=os.environ['EVENTS_TABLE'],
+                    Key={
+                        'requestId': {
+                            'S': requestId,
+                        }
+                    },
+                    UpdateExpression="SET stories = :s, completed = :c",
+                    ExpressionAttributeValues={
+                        ':s': {'S': storiesJson},
+                        ':c': {'BOOL': True}
+                    }
+                )
+                response = {}
+                response["Update"] = "Success"
             return response
             
 
