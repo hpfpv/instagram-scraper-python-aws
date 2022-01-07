@@ -13,7 +13,7 @@ def getDocumentJson(item):
     doc["requestId"] = item["requestId"]["S"]
     doc["time"] = item["time"]["S"]
     doc["account"] = item["account"]["S"]
-    doc["status"] = item["status"]["S"]
+    doc["state"] = item["state"]["S"]
     if item["state"]["S"] == "completed":
         doc["stories"] = item["stories"]["S"]
     return doc
@@ -29,10 +29,6 @@ def retrieveStories(requestId):
             }
         }
     )
-    # if response['Item']['completed']['BOOL'] == True:
-    #     loop = False
-    # else:
-    #     time.sleep(10)
     response = getDocumentJson(response["Item"])
     return json.dumps(response)
 
