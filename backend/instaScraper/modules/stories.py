@@ -158,7 +158,7 @@ def check_for_new_stories(account_to_mention):
         if last_scraped < story_last_item_utc:
             for storyItem in story.get_items():
                 storyItemJson  = structures.get_json_structure(storyItem)
-                if last_scraped < datetime.utcfromtimestamp(storyItemJson["node"]["taken_at_timestamp"]).replace(tzinfo=timezone.utc):
+                if last_scraped < datetime.utcfromtimestamp(storyItemJson["node"]["taken_at_timestamp"]):
                     for x in storyItemJson["node"]["tappable_objects"]:
                         if x["__typename"] == "GraphTappableMention":
                             if x["username"] == account_to_mention:
