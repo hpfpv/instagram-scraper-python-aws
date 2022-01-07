@@ -263,7 +263,7 @@ function retrieveStories(requestId) {
     async: true,
     type : 'GET',
     success : function(response) {
-      if (response.status == "completed"){
+      if (response.request_state == "completed"){
         console.log("stories retrieved successfully from backend")
         if (response.stories == '[]'){
           console.log("no new stories found")
