@@ -11,7 +11,7 @@ from instagram_private_api.errors import (
     ClientLoginRequiredError, ClientCookieExpiredError,
     ClientConnectionError
 )
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import logging
 import json
@@ -152,11 +152,12 @@ def check_for_new_stories(account_to_mention):
 
     for story in stories:
         # getting latest scrap time
-        story_last_item_utc = story.latest_media_utc()
+        # story_last_item_utc = story.latest_media_utc()
+        story_last_item_utc = datetime.utcfromtimestamp(story["node"]['latest_reel_media'])
         # cheking is story is newer than latest scrap time
         if last_scraped < story_last_item_utc:
             for storyItem in story.get_items():
-                if datetime.strptime(last_scraped) < storyItem.date_utc():
+                if datetime.strptime(last_scraped) < datetime.utcfromtimestamp(story["node"]["taken_at_timestamp"]).replace(tzinfo=timezone.utc):
                     storyItemJson  = structures.get_json_structure(storyItem)
                     for x in storyItemJson["node"]["tappable_objects"]:
                         if x["__typename"] == "GraphTappableMention":
