@@ -137,11 +137,13 @@ this.render()
 }
 
 const setup = async () => {
-
-    // is_video = true;
-      const loadMedia = stories.map((index, { media }, arr)=> {
+  const is_videoList = []
+    stories.forEach(element => {
+      is_videoList.push(element.is_video)
+    });
+      const loadMedia = stories.map((index, { media })=> {
         // const loadMedia = stories.map(item => {
-        if (arr[index].is_video == true){
+        if (is_videoList[index] == true){
           return new Promise((resolve, reject) => {
             var video = document.getElementById('story_video');
             // video.autoplay = true;
