@@ -128,11 +128,9 @@ def lambda_handler(event, context):
         if record['eventName'] == 'INSERT':
             requestId = record['dynamodb']['NewImage']['requestId']['S']
             account_to_mention = record['dynamodb']['NewImage']['account']['S']
-            try:
-                storiesJson = check_for_new_stories(account_to_mention)
-            except :
-                logger.info("server error")
-                sys.exit(1)
+            
+            storiesJson = check_for_new_stories(account_to_mention)
+            
             # stories_response = formated_response_json(stories)
 
             response = client.update_item(
