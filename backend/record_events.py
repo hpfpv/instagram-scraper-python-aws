@@ -22,7 +22,7 @@ def lambda_handler(event, context):
         "requestId" : { "S": requestId },
         "time" : { "S": time },
         "account" : { "S": account_to_mention },
-        "state": { "S": "in-progress" },
+        "request_state": { "S": "in-progress" },
     }
 
     log["message"] = json.dumps(record)
