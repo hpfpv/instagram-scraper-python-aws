@@ -37,18 +37,18 @@ this.times.appendChild(el)
 this.render = () => {
 const story = this.stories[this.currentIndex]
 var is_video = story.is_video;
-if (is_video){
+if (is_video == true){
   // this.root.style.background = ''
-  this.root.querySelector('#story_image').classList.add("d-none")
-  this.root.querySelector('#story_video').classList.remove("d-none")
-  this.root.querySelector('#story_video').src = "data/media/" + story.media + ".mp4"
-  this.root.querySelector('#story_image').poster = "data/media/" + story.media + ".jpg"
-  this.root.querySelector('#story_video').autoplay = true
+  // this.root.querySelector('#story_image').classList.add("d-none")
+  // this.root.querySelector('#story_video').classList.remove("d-none")
+  this.root.querySelector('#story_media').src = "data/media/" + story.media + ".mp4"
+  this.root.querySelector('#story_media').poster = "data/media/" + story.media + ".jpg"
+  this.root.querySelector('#story_media').autoplay = true
 }
 else {
-  this.root.querySelector('#story_video').classList.add("d-none")
-  this.root.querySelector('#story_image').classList.remove("d-none")
-  this.root.querySelector('#story_image').src = "data/media/" + story.media + ".jpg"
+  // this.root.querySelector('#story_video').classList.add("d-none")
+  // this.root.querySelector('#story_media').classList.remove("d-none")
+  this.root.querySelector('#story_media').poster = "data/media/" + story.media + ".jpg"
 }
 this.root.querySelector('#story_avatar').style.backgroundImage = `url(data/profile/${story.user}.jpg)`
 this.root.querySelector('#story_avatar_big').src = "data/profile/" + story.user + ".jpg"
@@ -137,39 +137,47 @@ this.render()
 }
 
 const setup = async () => {
-  const is_videoList = []
-    stories.forEach(element => {
-      is_videoList.push(element.is_video)
-    });
-      const loadMedia = stories.map((index, { media })=> {
-        // const loadMedia = stories.map(item => {
-        if (is_videoList[index] == true){
-          return new Promise((resolve, reject) => {
-            var video = document.getElementById('story_video');
-            // video.autoplay = true;
-            // video.muted = true;
-            video.playsInline = true;
-            video.src = "data/media/" + media + ".mp4"
-            // video.controls = true;
-            video.load();
-            video.addEventListener('canplaythrough', function(){
-              resolve(video);
-            });
-            video.addEventListener('error', function(){
-              reject(video);
-            })
-          })
-        }else{
-          return new Promise((resolve, reject) => {
-            let img = document.getElementById('story_image');
-            img.onload = () => {
-              resolve(media)
-            }
-            img.src = "data/media/" + media + ".jpg" 
-          })
-        }
+  const loadStories = stories.map((story) => {
+    const response = []
+    response["story_id"] = story.story_id
+    response["story_time"] = story.story_time
+    response["user"] = story.user
+    response["is_video"] = story.is_video
+    response["time"] = story.time
+    var video = document.getElementById('story_media');
+    if (story.is_video == true){
+      response["media"] = new Promise((resolve, reject) => {
+        // var video = document.getElementById('story_media');
+        // video.autoplay = true;
+        video.muted = true;
+        video.playsInline = true;
+        video.src = "data/media/" + story.media + ".mp4"
+        video.controls = false;
+        video.load();
+        resolve(video);
+        // video.addEventListener('canplaythrough', function(){
+          
+        // });
+        // video.addEventListener('error', function(){
+        //   reject(video);
+        // })
       })
-      await Promise.all(loadMedia);
+    }else{
+      response["media"] = new Promise((resolve, reject) => {
+        // let img = document.getElementById('story_media');
+        // video.onload = () => {
+        //   resolve(story.media)
+        // }
+        video.playsInline = true;
+        video.controls = false;
+        video.poster = "data/media/" + story.media + ".jpg" 
+        resolve(video);
+      })
+    }
+    return response
+      
+  })
+  await Promise.all(loadStories);
 
   const s = new Storyfier(stories, story_container);
   s.start()
@@ -218,32 +226,34 @@ function initStories() {
   }
   console.log("Account to mention", account_to_mention);
 
-  // Use this section for testing purposes only
-  sleep(3000).then(() => {
-    const stor = [{"story_id": "2745752530074420522", "story_time": "2h", "user": "decouvre.bj", "is_video": false, "story_media_url": "https://scontent-lga3-1.cdninstagram.com/v/t51.2885-15/e35/271468002_6807092292696775_5230543882211352467_n.jpg?_nc_ht=scontent-lga3-1.cdninstagram.com&_nc_cat=107&_nc_ohc=QYDNgP6OgvAAX8xA2O1&edm=AHlfZHwBAAAA&ccb=7-4&oh=00_AT-NjncxICcjtc6of0LEGMh0mAQ0DdmyDtCQl8CuUHKlLw&oe=61DA5A19&_nc_sid=21929d", "media": "2745752530074420522", "time": 5000}, {"story_id": "2745746206237102229", "story_time": "2h", "user": "decouvre.bj", "is_video": true, "story_media_url": "https://scontent-lga3-1.cdninstagram.com/v/t50.12441-16/271303537_618782479362080_6340909627538600528_n.mp4?_nc_ht=scontent-lga3-1.cdninstagram.com&_nc_cat=108&_nc_ohc=_aWdv1nXuPMAX87G_EP&tn=hCW8RFCdqdwz8MUd&edm=AHlfZHwBAAAA&ccb=7-4&oe=61DA4091&oh=00_AT8zBj-b012sjGfhHVMelqdcKwFySXQPwnhZR-bCJsNumQ&_nc_sid=21929d", "media": "2745746206237102229", "time": 8220.0}, {"story_id": "2745787120598851686", "story_time": "1h", "user": "uneantillaisequelquepart", "is_video": false, "story_media_url": "https://scontent-lga3-1.cdninstagram.com/v/t51.2885-15/e35/p1080x1080/271548749_623922062060156_6502586881374907532_n.jpg?_nc_ht=scontent-lga3-1.cdninstagram.com&_nc_cat=108&_nc_ohc=-B2hQqXrIpMAX_MDoru&tn=hCW8RFCdqdwz8MUd&edm=AHlfZHwBAAAA&ccb=7-4&oh=00_AT9nuXqhAFEdZ8UuuosD5pJeIV5NxnizRGy-zA6-hC89vw&oe=61DA718E&_nc_sid=21929d", "media": "2745787120598851686", "time": 5000}, {"story_id": "2745746518576306857", "story_time": "2h", "user": "sam_b_journey", "is_video": true, "story_media_url": "https://scontent-lga3-1.cdninstagram.com/v/t50.12441-16/271318316_650054186024136_3051851240130752546_n.mp4?_nc_ht=scontent-lga3-1.cdninstagram.com&_nc_cat=100&_nc_ohc=qIugGzRIHN8AX_FE1cf&tn=hCW8RFCdqdwz8MUd&edm=AHlfZHwBAAAA&ccb=7-4&oe=61DA28DA&oh=00_AT9c28romkQwwRq1edGSFhfG86nS2ci3tXGURk7XUKCOBw&_nc_sid=21929d", "media": "2745746518576306857", "time": 5000.0}, {"story_id": "2745763739452556401", "story_time": "2h", "user": "svint.vlexe", "is_video": false, "story_media_url": "https://scontent-lga3-1.cdninstagram.com/v/t51.2885-15/e35/271314811_343121794020321_2652971603330649226_n.webp.jpg?_nc_ht=scontent-lga3-1.cdninstagram.com&_nc_cat=109&_nc_ohc=k_pHLwGh_bwAX83LKa7&edm=AHlfZHwBAAAA&ccb=7-4&oh=00_AT_v6RoNGRD1qn-ePThQ6qYdXYPwEwvsGS509_X5LEG6Pw&oe=61DA3E85&_nc_sid=21929d", "media": "2745763739452556401", "time": 5000}]
-    const stor_str = JSON.stringify(stor)
-    sessionStorage.setItem('stories', stor_str)
-    window.location = './stories.html';
-  });
+  // Use this section for testing purposes only - static data received from backend
+  // sleep(5).then(() => {
+  //   const stor = [{"story_id": "2745752530074420522", "story_time": "2h", "user": "decouvre.bj", "is_video": false, "story_media_url": "https://scontent-lga3-1.cdninstagram.com/v/t51.2885-15/e35/271468002_6807092292696775_5230543882211352467_n.jpg?_nc_ht=scontent-lga3-1.cdninstagram.com&_nc_cat=107&_nc_ohc=QYDNgP6OgvAAX8xA2O1&edm=AHlfZHwBAAAA&ccb=7-4&oh=00_AT-NjncxICcjtc6of0LEGMh0mAQ0DdmyDtCQl8CuUHKlLw&oe=61DA5A19&_nc_sid=21929d", "media": "2745752530074420522", "time": 5000}, {"story_id": "2745746206237102229", "story_time": "2h", "user": "decouvre.bj", "is_video": true, "story_media_url": "https://scontent-lga3-1.cdninstagram.com/v/t50.12441-16/271303537_618782479362080_6340909627538600528_n.mp4?_nc_ht=scontent-lga3-1.cdninstagram.com&_nc_cat=108&_nc_ohc=_aWdv1nXuPMAX87G_EP&tn=hCW8RFCdqdwz8MUd&edm=AHlfZHwBAAAA&ccb=7-4&oe=61DA4091&oh=00_AT8zBj-b012sjGfhHVMelqdcKwFySXQPwnhZR-bCJsNumQ&_nc_sid=21929d", "media": "2745746206237102229", "time": 8220.0}, {"story_id": "2745787120598851686", "story_time": "1h", "user": "uneantillaisequelquepart", "is_video": false, "story_media_url": "https://scontent-lga3-1.cdninstagram.com/v/t51.2885-15/e35/p1080x1080/271548749_623922062060156_6502586881374907532_n.jpg?_nc_ht=scontent-lga3-1.cdninstagram.com&_nc_cat=108&_nc_ohc=-B2hQqXrIpMAX_MDoru&tn=hCW8RFCdqdwz8MUd&edm=AHlfZHwBAAAA&ccb=7-4&oh=00_AT9nuXqhAFEdZ8UuuosD5pJeIV5NxnizRGy-zA6-hC89vw&oe=61DA718E&_nc_sid=21929d", "media": "2745787120598851686", "time": 5000}, {"story_id": "2745746518576306857", "story_time": "2h", "user": "sam_b_journey", "is_video": true, "story_media_url": "https://scontent-lga3-1.cdninstagram.com/v/t50.12441-16/271318316_650054186024136_3051851240130752546_n.mp4?_nc_ht=scontent-lga3-1.cdninstagram.com&_nc_cat=100&_nc_ohc=qIugGzRIHN8AX_FE1cf&tn=hCW8RFCdqdwz8MUd&edm=AHlfZHwBAAAA&ccb=7-4&oe=61DA28DA&oh=00_AT9c28romkQwwRq1edGSFhfG86nS2ci3tXGURk7XUKCOBw&_nc_sid=21929d", "media": "2745746518576306857", "time": 5000.0}, {"story_id": "2745763739452556401", "story_time": "2h", "user": "svint.vlexe", "is_video": false, "story_media_url": "https://scontent-lga3-1.cdninstagram.com/v/t51.2885-15/e35/271314811_343121794020321_2652971603330649226_n.webp.jpg?_nc_ht=scontent-lga3-1.cdninstagram.com&_nc_cat=109&_nc_ohc=k_pHLwGh_bwAX83LKa7&edm=AHlfZHwBAAAA&ccb=7-4&oh=00_AT_v6RoNGRD1qn-ePThQ6qYdXYPwEwvsGS509_X5LEG6Pw&oe=61DA3E85&_nc_sid=21929d", "media": "2745763739452556401", "time": 5000}]
+  //   const stor_str = JSON.stringify(stor)
+  //   sessionStorage.setItem('stories', stor_str)
+  //   window.location = './stories.html';
+  // });
+  // End of test section. comment below lines when testing
+
   var initStoriesApi = apiEndpoint + account_to_mention + '/stories';
 
-  // $.ajax({
-  // url : initStoriesApi,
-  // type : 'GET',
-  // success : function(response) {
-  //     requestId = response.requestId;
-  //     console.log("requestId", requestId);
-  //     sleep(100000).then(() => {
-  //       retrieveStories(requestId);
-  //     });
-  // },
-  // error : function(response) {
-  //     console.log("An error occured while initiating the request");
-  //     window.location = './error.html';
-  //     sessionStorage.setItem("options_error_text", "An error occured while initiating the request. Please try again later.");
-  //     sessionStorage.setItem("options_error_retry", "initStories();")
-  // }
-  // });
+  $.ajax({
+  url : initStoriesApi,
+  type : 'GET',
+  success : function(response) {
+      requestId = response.requestId;
+      console.log("requestId", requestId);
+      sleep(100000).then(() => {
+        retrieveStories(requestId);
+      });
+  },
+  error : function(response) {
+      console.log("An error occured while initiating the request");
+      window.location = './error.html';
+      sessionStorage.setItem("options_error_text", "An error occured while initiating the request. Please try again later.");
+      sessionStorage.setItem("options_error_retry", "initStories();")
+  }
+  });
 }
 
 function retrieveStories(requestId) {
