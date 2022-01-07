@@ -13,8 +13,8 @@ def getDocumentJson(item):
     doc["requestId"] = item["requestId"]["S"]
     doc["time"] = item["time"]["S"]
     doc["account"] = item["account"]["S"]
-    doc["state"] = item["state"]["S"]
-    if item["state"]["S"] == "completed":
+    doc["request_state"] = item["request_state"]["S"]
+    if item["request_state"]["S"] == "completed":
         doc["stories"] = item["stories"]["S"]
     return doc
 
