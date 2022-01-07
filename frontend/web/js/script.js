@@ -139,18 +139,17 @@ this.render()
 const setup = async () => {
 
     // is_video = true;
-      // const loadMedia = stories.map(({ media }) => {
-        const loadMedia = stories.map(item => {
-        if (item.is_video == true){
+      const loadMedia = stories.map((index, { media }, arr)=> {
+        // const loadMedia = stories.map(item => {
+        if (arr[index].is_video == true){
           return new Promise((resolve, reject) => {
             var video = document.getElementById('story_video');
             // video.autoplay = true;
             // video.muted = true;
             video.playsInline = true;
-            video.src = "data/media/" + item.media + ".mp4"
+            video.src = "data/media/" + media + ".mp4"
             // video.controls = true;
             video.load();
-      
             video.addEventListener('canplaythrough', function(){
               resolve(video);
             });
@@ -162,9 +161,9 @@ const setup = async () => {
           return new Promise((resolve, reject) => {
             let img = document.getElementById('story_image');
             img.onload = () => {
-              resolve(item.media)
+              resolve(media)
             }
-            img.src = "data/media/" + item.media + ".jpg" 
+            img.src = "data/media/" + media + ".jpg" 
           })
         }
       })
