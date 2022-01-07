@@ -139,7 +139,7 @@ this.render()
 const setup = async () => {
 
     // is_video = true;
-  const check_video = stories.map(({ is_video }) => {  
+  const check_video =  stories.map(({ is_video }) => {  
     if (is_video == true) {
       const loadVideos = stories.map(({ media }) => {
         return new Promise((resolve, reject) => {
@@ -246,7 +246,7 @@ function initStories() {
   //     sessionStorage.setItem("options_error_text", "An error occured while initiating the request. Please try again later.");
   //     sessionStorage.setItem("options_error_retry", "initStories();")
   // }
-  });
+  // });
 }
 
 function retrieveStories(requestId) {
