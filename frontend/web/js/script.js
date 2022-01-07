@@ -278,6 +278,7 @@ function retrieveStories(requestId) {
           retrieveStories(requestId);
         });
       } else {
+        console.log("An error occured while retrieving stories. Please try again later.");
         window.location = './error.html';
         sessionStorage.setItem("options_error_text", "An error occured while retrieving stories. Please try again later.");
         sessionStorage.setItem("options_error_retry", "retrieveStories(requestId)")

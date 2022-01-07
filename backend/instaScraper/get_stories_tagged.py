@@ -140,7 +140,7 @@ def lambda_handler(event, context):
                             'S': requestId,
                         }
                     },
-                    UpdateExpression="SET status = :s",
+                    UpdateExpression="SET state = :s",
                     ExpressionAttributeValues={
                         ':s': {'S': "error"}
                     }
@@ -155,10 +155,10 @@ def lambda_handler(event, context):
                             'S': requestId,
                         }
                     },
-                    UpdateExpression="SET stories = :s, completed = :c",
+                    UpdateExpression="SET stories = :s, state = :c",
                     ExpressionAttributeValues={
                         ':s': {'S': storiesJson},
-                        ':c': {'BOOL': True}
+                        ':c': {'S': "completed"}
                     }
                 )
                 response = {}

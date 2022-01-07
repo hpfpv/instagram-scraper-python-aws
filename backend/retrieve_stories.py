@@ -14,7 +14,7 @@ def getDocumentJson(item):
     doc["time"] = item["time"]["S"]
     doc["account"] = item["account"]["S"]
     doc["status"] = item["status"]["S"]
-    if item["status"]["S"] == "completed":
+    if item["state"]["S"] == "completed":
         doc["stories"] = item["stories"]["S"]
     return doc
 
