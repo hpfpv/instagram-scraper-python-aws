@@ -139,41 +139,37 @@ this.render()
 const setup = async () => {
 
     // is_video = true;
-  const check_video =  stories.map(({ is_video }) => {  
-    if (is_video == true) {
-      const loadVideos = stories.map(({ media }) => {
-        return new Promise((resolve, reject) => {
-          var video = document.getElementById('story_video');
-          // video.autoplay = true;
-          // video.muted = true;
-          video.playsInline = true;
-          video.src = "data/media/" + media + ".mp4"
-          // video.controls = true;
-          video.load();
-    
-          video.addEventListener('canplaythrough', function(){
-            resolve(video);
-          });
-          video.addEventListener('error', function(){
-            reject(video);
+      // const loadMedia = stories.map(({ media }) => {
+        const loadMedia = stories.map(item => {
+        if (item.is_video == true){
+          return new Promise((resolve, reject) => {
+            var video = document.getElementById('story_video');
+            // video.autoplay = true;
+            // video.muted = true;
+            video.playsInline = true;
+            video.src = "data/media/" + item.media + ".mp4"
+            // video.controls = true;
+            video.load();
+      
+            video.addEventListener('canplaythrough', function(){
+              resolve(video);
+            });
+            video.addEventListener('error', function(){
+              reject(video);
+            })
           })
-        })
-      })
-      // if (is_video == true) {
-      await Promise.all(loadVideos);
-    } else {
-    const loadImages = stories.map(({ media }) => {
-      return new Promise((resolve, reject) => {
-        let img = document.getElementById('story_image');
-        img.onload = () => {
-          resolve(media)
+        }else{
+          return new Promise((resolve, reject) => {
+            let img = document.getElementById('story_image');
+            img.onload = () => {
+              resolve(item.media)
+            }
+            img.src = "data/media/" + item.media + ".jpg" 
+          })
         }
-        img.src = "data/media/" + media + ".jpg" 
       })
-    })
-    await Promise.all(loadImages);
-    }
-  })
+      await Promise.all(loadMedia);
+
   const s = new Storyfier(stories, story_container);
   s.start()
 
