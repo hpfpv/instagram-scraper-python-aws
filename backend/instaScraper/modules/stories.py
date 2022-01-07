@@ -157,28 +157,28 @@ def check_for_new_stories(account_to_mention):
         # cheking is story is newer than latest scrap time
         if last_scraped < story_last_item_utc:
             for storyItem in story.get_items():
-                if last_scraped < datetime.utcfromtimestamp(story._node["taken_at_timestamp"]).replace(tzinfo=timezone.utc):
-                    storyItemJson  = structures.get_json_structure(storyItem)
+                storyItemJson  = structures.get_json_structure(storyItem)
+                if last_scraped < datetime.utcfromtimestamp(storyItemJson["node"]["taken_at_timestamp"]).replace(tzinfo=timezone.utc):
                     for x in storyItemJson["node"]["tappable_objects"]:
                         if x["__typename"] == "GraphTappableMention":
                             if x["username"] == account_to_mention:
                                 logger.info(f"New stories Found where {account_to_mention} is mentionned")
                                 fullStoryJson.append(storyItemJson)
-                                story_owner = story["node"]["owner"]["username"]
-                                story_id = story["node"]["id"]
-                                story_owner_profile_pic_url = story["node"]["owner"]["profile_pic_url"]
-                                story_is_video = story["node"]["is_video"]
-                                taken_at_timestamp = story["node"]["taken_at_timestamp"]
+                                story_owner = storyItemJson["node"]["owner"]["username"]
+                                story_id = storyItemJson["node"]["id"]
+                                story_owner_profile_pic_url = storyItemJson["node"]["owner"]["profile_pic_url"]
+                                story_is_video = storyItemJson["node"]["is_video"]
+                                taken_at_timestamp = storyItemJson["node"]["taken_at_timestamp"]
                                 time = story_time_str(taken_at_timestamp)
 
                                 if story_is_video:
-                                    story_video_url = story["node"]["video_resources"][0]["src"]
+                                    story_video_url = storyItemJson["node"]["video_resources"][0]["src"]
                                     story_media_url = story_video_url
-                                    story_display_url = story["node"]["display_url"]
-                                    story_duration = story["node"]["video_duration"] * 1000
+                                    story_display_url = storyItemJson["node"]["display_url"]
+                                    story_duration = storyItemJson["node"]["video_duration"] * 1000
                                 else:
                                     story_video_url = ""
-                                    story_display_url = story["node"]["display_url"]
+                                    story_display_url = storyItemJson["node"]["display_url"]
                                     story_media_url = story_display_url
                                     story_duration = 5000
 
