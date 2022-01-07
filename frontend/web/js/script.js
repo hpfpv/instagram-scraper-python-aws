@@ -263,7 +263,7 @@ function retrieveStories(requestId) {
     async: true,
     type : 'GET',
     success : function(response) {
-      if (response.completed == true){
+      if (response.status == "completed"){
         console.log("stories retrieved successfully from backend")
         if (response.stories == '[]'){
           console.log("no new stories found")
@@ -272,11 +272,15 @@ function retrieveStories(requestId) {
           sessionStorage.setItem('stories', response.stories)
           window.location = './stories.html';
         }
-      }else{
+      } else if (response.status == "in-progress"){
         console.log("request still being proccessed by backend");
         sleep(60000).then(() => {
           retrieveStories(requestId);
         });
+      } else {
+        window.location = './error.html';
+        sessionStorage.setItem("options_error_text", "An error occured while retrieving stories. Please try again later.");
+        sessionStorage.setItem("options_error_retry", "retrieveStories(requestId)")
       }
     },
     error : function(response) {
