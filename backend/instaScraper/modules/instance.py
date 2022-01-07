@@ -46,7 +46,7 @@ def get_scraper():
     return scraper
     
 # Instaloader Instances initiation
-@cache(seconds=600, maxsize=2)
+@cache(seconds=600, maxsize=4)
 def get_instance():
     """
         Creates Instaloader instance with a random scraper from the scraper List
