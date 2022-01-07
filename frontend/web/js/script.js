@@ -272,7 +272,7 @@ function retrieveStories(requestId) {
           sessionStorage.setItem('stories', response.stories)
           window.location = './stories.html';
         }
-      } else if (response.status == "in-progress"){
+      } else if (response.request_state == "in-progress"){
         console.log("request still being proccessed by backend");
         sleep(60000).then(() => {
           retrieveStories(requestId);
