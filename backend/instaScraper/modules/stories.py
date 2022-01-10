@@ -235,7 +235,7 @@ def check_for_new_stories(account_to_mention):
         Key=last_scrapped_s3_key,
     )
 
-    logger.info("new_stories")
+    logger.info("stories response")
     logger.info(response)
     return response
 
