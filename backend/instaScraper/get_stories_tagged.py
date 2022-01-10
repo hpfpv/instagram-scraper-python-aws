@@ -129,25 +129,25 @@ def lambda_handler(event, context):
             requestId = record['dynamodb']['NewImage']['requestId']['S']
             account_to_mention = record['dynamodb']['NewImage']['account']['S']
 
-        try:
+            # try:
             storiesJson = check_for_new_stories(account_to_mention)
-        except Exception as e:
-            logger.info(e)
-            response = client.update_item(
-                TableName=os.environ['EVENTS_TABLE'],
-                Key={
-                    'requestId': {
-                        'S': requestId,
-                    }
-                },
-                UpdateExpression="SET request_state = :s",
-                ExpressionAttributeValues={
-                    ':s': {'S': "error"}
-                }
-            )
-            response = {}
-            response["Update"] = "Success"
-        else:
+            # except Exception as e:
+            #     logger.info(e)
+            #     response = client.update_item(
+            #         TableName=os.environ['EVENTS_TABLE'],
+            #         Key={
+            #             'requestId': {
+            #                 'S': requestId,
+            #             }
+            #         },
+            #         UpdateExpression="SET request_state = :s",
+            #         ExpressionAttributeValues={
+            #             ':s': {'S': "error"}
+            #         }
+            #     )
+            #     response = {}
+            #     response["Update"] = "Success"
+            # else:
             response = client.update_item(
                 TableName=os.environ['EVENTS_TABLE'],
                 Key={
@@ -163,6 +163,6 @@ def lambda_handler(event, context):
             )
             response = {}
             response["Update"] = "Success"
-        return response
+            return response
             
 
