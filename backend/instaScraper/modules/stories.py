@@ -223,7 +223,7 @@ def check_for_new_stories(account_to_mention):
     if response != []:
         filekey_all = f"{dir_all}/{current_date_time}.json"
         s3.put_object(
-            Body=fullStoryJson,
+            Body=json.dumps(fullStoryJson),
             Bucket=webbucket,
             Key=filekey_all,
         )
