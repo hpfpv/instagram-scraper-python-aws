@@ -157,7 +157,7 @@ def lambda_handler(event, context):
                 },
                 UpdateExpression="SET stories = :s, request_state = :c",
                 ExpressionAttributeValues={
-                    ':s': {'S': storiesJson},
+                    ':s': {'S': json.dumps(storiesJson)},
                     ':c': {'S': "completed"}
                 }
             )
