@@ -148,7 +148,7 @@ def check_for_new_stories(account_to_mention):
             logger.info("error accessing the s3 bucket. check bucket policy")
             logger.info(e.response['Error'])
     else:
-        last_scraped = datetime.strptime(s3.get_object(Bucket=webbucket, Key=last_scrapped_s3_key)["Body"], "%Y-%m-%d-%H:%M:%S")
+        last_scraped = datetime.strptime(s3.get_object(Bucket=webbucket, Key=last_scrapped_s3_key)["Body"].read().decode('utf-8'), "%Y-%m-%d-%H:%M:%S")
 
     for story in stories:
         # getting latest scrap time
