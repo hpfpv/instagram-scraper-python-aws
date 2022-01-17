@@ -31,10 +31,15 @@
     <script>
         document.getElementById('options_error_text').innerHTML = sessionStorage.getItem("options_error_text");
         const error_type = sessionStorage.getItem("error_type");
-        if (error_type == 1 ){
-            document.getElementById('options_error_retry').onclick = function() {initStories();}
-        } else {
-            document.getElementById('options_error_retry').onclick = function() {initStories();}
+        switch (error_type) {
+            case 1:
+                document.getElementById('options_error_retry').onclick = function() {initStories();};
+                break;
+            case 2:
+                document.getElementById('options_error_retry').onclick = function() {retryRetrieve();};
+                break;
+            default:
+                console.error("Unknown error type: " + error_type);
         }
     </script>
 </body>
