@@ -251,13 +251,14 @@ function initStories() {
       console.log("An error occured while initiating the request");
       window.location = './error.html';
       sessionStorage.setItem("options_error_text", "An error occured while initiating the request. Please try again later.");
-      sessionStorage.setItem("options_error_retry", "initStories();")
+      sessionStorage.setItem("error_type", 1)
   }
   });
 }
 
 function retrieveStories(requestId) {
   var retrieveStoriesApi = apiEndpoint + requestId;
+  sessionStorage.setItem('requestId', requestId);
   $.ajax({
     url : retrieveStoriesApi,
     async: true,
@@ -281,7 +282,7 @@ function retrieveStories(requestId) {
         console.log("An error occured while retrieving stories. Please try again later.");
         window.location = './error.html';
         sessionStorage.setItem("options_error_text", "An error occured while retrieving stories. Please try again later.");
-        sessionStorage.setItem("options_error_retry", "retrieveStories(requestId)")
+        sessionStorage.setItem("error_type", 2)
       }
     },
     error : function(response) {
@@ -290,8 +291,13 @@ function retrieveStories(requestId) {
       });
       window.location = './error.html';
       sessionStorage.setItem("options_error_text", "An error occured while retrieving stories. Please try again later.");
-      sessionStorage.setItem("options_error_retry", "retrieveStories(requestId)")
+      sessionStorage.setItem("error_type", 2)
     }
     });
 }
 
+function retryRetrieve() {
+  work_in_progress();
+  const requestId = sessionStorage.getItem('requestId');
+  retrieveStories(requestId);
+}
