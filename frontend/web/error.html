@@ -39,7 +39,7 @@
                 document.getElementById('options_error_retry').onclick = function() {retryRetrieve();};
                 break;
             default:
-                console.error("Unknown error type: " + error_type);
+                document.getElementById('options_error_retry').onclick = function() {stop();};
         }
     </script>
 </body>
