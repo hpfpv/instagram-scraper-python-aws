@@ -243,7 +243,7 @@ function initStories() {
   success : function(response) {
       requestId = response.requestId;
       console.log("requestId", requestId);
-      sleep(100000).then(() => {
+      sleep(5000).then(() => {
         retrieveStories(requestId);
       });
   },
@@ -275,7 +275,7 @@ function retrieveStories(requestId) {
         }
       } else if (response.request_state == "in-progress"){
         console.log("request still being proccessed by backend");
-        sleep(60000).then(() => {
+        sleep(5000).then(() => {
           retrieveStories(requestId);
         });
       } else {
@@ -286,7 +286,7 @@ function retrieveStories(requestId) {
       }
     },
     error : function(response) {
-      sleep(60000).then(() => {
+      sleep(10000).then(() => {
         retrieveStories(requestId);
       });
       window.location = './error.html';
