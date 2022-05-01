@@ -16,10 +16,11 @@ s3 = boto3.client('s3')
 bucketurl = f'https://{webbucket}.s3.amazonaws.com/'
 
 # @lru_cache(maxsize=128)
-def profile_picture(url, filename):
+def profile_picture(requestId, url, filename):
 
     log = {}
     log["function"] = "profile_picture"
+    log["requestId"] = requestId
 
     dir = 'data/profile'
     filekey = f"{dir}/{filename}.jpg"
@@ -45,10 +46,11 @@ def profile_picture(url, filename):
         logger.info(json.dumps(log))
 
 # @lru_cache(maxsize=128)
-def story_media(video, display, is_video, filename):
+def story_media(requestId, video, display, is_video, filename):
 
     log = {}
     log["function"] = "story_media"
+    log["requestId"] = requestId
 
     dir = 'data/media'
     video_filekey = f"{dir}/{filename}.mp4"

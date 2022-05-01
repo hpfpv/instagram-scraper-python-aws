@@ -190,8 +190,8 @@ def check_for_new_stories(requestId, account_to_mention):
                                         story_media_url = story_display_url
                                         story_duration = 5000
 
-                                    profile_picture(story_owner_profile_pic_url, story_owner)
-                                    story_media(story_video_url, story_display_url, story_is_video, story_id)
+                                    profile_picture(requestId, story_owner_profile_pic_url, story_owner)
+                                    story_media(requestId, story_video_url, story_display_url, story_is_video, story_id)
 
                                     data = {
                                         'story_id': story_id,
