@@ -217,8 +217,9 @@ def check_for_new_stories(requestId, account_to_mention):
                                                 Key=filekey_history,
                                             )
                                         else:
-                                            logger.info("error accessing the s3 bucket. check bucket policy")
-                                            logger.info(e.response['Error'])
+                                            log["status"] = "error accessing the s3 bucket. check bucket policy"
+                                            log["error"] = e.response['Error']
+                                            logger.info(json.dumps(log))
                                 else:
                                     # logger.info(f"Story Item {id} not mentionning {account_to_mention}")
                                     pass
