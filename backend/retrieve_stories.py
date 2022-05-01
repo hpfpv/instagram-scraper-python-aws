@@ -39,8 +39,18 @@ def lambda_handler(event, context):
     log["function"] = "retrieve_stories"
 
     requestId = event['pathParameters']['requestId']
-    items = retrieveStories(requestId)
-    logger.info(items)
+
+    try:
+        items = retrieveStories(requestId)
+    except Exception as err:
+        log["status"] = f"error: {str(err)}"
+        response = {'requestId': requestId, 'time': "N/A", 'account': "N/A", 'request_state': "error"}
+        logger.info(json.dumps(log))
+    else:
+        response = items 
+        log["status"] = "completed"
+        log["response"] = response
+        logger.info(json.dumps(log))
         
     return {
         'statusCode': 200,
@@ -50,5 +60,5 @@ def lambda_handler(event, context):
             'Access-Control-Allow-Methods': 'GET',
             'Content-Type': 'application/json'
         },
-        'body': items
+        'body': response
     }

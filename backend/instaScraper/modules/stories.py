@@ -34,7 +34,7 @@ logger.setLevel(logging.INFO)
 
 
 @cache(seconds=300)
-def get_followers(account_to_mention):
+def get_followers(requestId, account_to_mention):
     """
         Returns a List of userIds of specified account followers
         Uses its own Instaloader instance since account needs to be logged in to retrieve followers
@@ -43,18 +43,19 @@ def get_followers(account_to_mention):
 
     log = {}
     log["function"] = "get_followers"
-    log["message"] = "retrieving followers"
+    log["requestId"] = requestId
+    log["account_to_mention"] = account_to_mention
 
     logger.info(log)
     maxretries = 0
     gotFollowers = False
     while gotFollowers == False:
         try:
-            instance = get_instance()
+            instance = get_instance(requestId)
             profile = instaloader.Profile.from_username(instance.context, username=account_to_mention)
             followers_iterator = profile.get_followers()
         except (Exceptions.ProfileNotExistsException) as err:
-            log["message"] = str(err)
+            log["status"] = f"error: {str(err)}"
             logger.info(json.dumps(log))
             sys.exit(1)
         except (Exceptions.ConnectionException, Exceptions.BadCredentialsException, Exceptions.InvalidArgumentException) as err:
@@ -65,11 +66,13 @@ def get_followers(account_to_mention):
                 }
             logger.info(json.dumps(message))
             if maxretries == 2: 
-                logger.info("maximum attemps. stopping request now")
+                log["status"] = f"error: {str(err)}"
+                logger.info(json.dumps(log))
                 sys.exit(1)
         else:
             gotFollowers = True
-            logger.info(json.dumps("Followers ok"))
+            log["status"] = "completed"
+            logger.info(json.dumps(log))
 
     userIds = []
     for account in followers_iterator:
@@ -78,59 +81,61 @@ def get_followers(account_to_mention):
     return userIds
     
 # @cache(seconds=600)
-def get_followers_stories(account_to_mention):
+def get_followers_stories(requestId, account_to_mention):
     """
         Return stories of speficies userIds
         Stories as Instaloader Structure
     """
+    userIds = get_followers(requestId, account_to_mention)
+
     log = {}
     log["function"] = "get_followers_stories"
-    log["message"] = f"retriving account {account_to_mention} followers' stories"
-    logger.info(json.dumps(log))
-    userIds = get_followers(account_to_mention)
+    log["requestId"] = requestId
+    log["account_to_mention"] = account_to_mention
+
     maxretries = 0
     gotStories = False
     while gotStories == False:
         try:
-            instance = get_instance()
+            instance = get_instance(requestId)
             stories = instance.get_stories(userids=userIds)
         except (Exceptions.ProfileNotExistsException) as err:
-            log["message"] = str(err)
+            log["status"] = f"error: {str(err)}"
             logger.info(json.dumps(log))
             sys.exit(1)
         except (Exceptions.ConnectionException, Exceptions.BadCredentialsException, Exceptions.InvalidArgumentException) as err:
             maxretries +=1
-            message = {
-                    "function": "get_followers_stories",
-                    "error": str(err),
-                }
-            logger.info(json.dumps(message))
+            log["status"] = f"error: {str(err)}"
+            logger.info(json.dumps(log))
             if maxretries == 2: 
-                logger.info("maximum attemps. stopping request now")
+                log["status"] = "maximum attemps. stopping request now"
+                logger.info(json.dumps(log))
                 sys.exit(1)
         else:
             gotStories = True
-            logger.info(json.dumps("Followers stories ok"))
+            log["status"] = "completed"
+            logger.info(json.dumps(log))
 
     return stories
 
 
-def check_for_new_stories(account_to_mention):
+def check_for_new_stories(requestId, account_to_mention):
     """
         Returns True if new stories are found
         Also retruns dict of new stories items
     """
-
-    log = {}
-    log["function"] = "check_for_new_stories"
-    log["message"] = f"checking for new stories"
-    logger.info(json.dumps(log))
 
     webbucket = os.environ['WEB_BUCKET']
     bucketurl = f'https://{webbucket}.s3.amazonaws.com/'
     s3 = boto3.client('s3')
 
     stories = get_followers_stories(account_to_mention)
+
+    log = {}
+    log["function"] = "check_for_new_stories"
+    log["requestId"] = requestId
+    log["account_to_mention"] = account_to_mention
+    logger.info(json.dumps(log))
 
     dir_history = "data/logs/" + account_to_mention + "/history"
     dir_all = "data/logs/" + account_to_mention + "/all"
@@ -145,98 +150,106 @@ def check_for_new_stories(account_to_mention):
             # The object does not exist.
             last_scraped = datetime.utcnow() - timedelta(days=1)
         else:
-            logger.info("error accessing the s3 bucket. check bucket policy")
-            logger.info(e.response['Error'])
+            log["status"] = f"error accessing the s3 bucket. check bucket policy"
+            log["error"] = e.response['Error']
+            logger.info(json.dumps(log))
     else:
         last_scraped = datetime.strptime(s3.get_object(Bucket=webbucket, Key=last_scrapped_s3_key)["Body"].read().decode('utf-8'), "%Y-%m-%d-%H:%M:%S")
 
-    for story in stories:
-        # getting latest scrap time
-        # story_last_item_utc = story.latest_media_utc()
-        story_last_item_utc = datetime.utcfromtimestamp(story._node['latest_reel_media'])
-        # cheking is story is newer than latest scrap time
-        if last_scraped < story_last_item_utc:
-            for storyItem in story.get_items():
-                storyItemJson  = structures.get_json_structure(storyItem)
-                if last_scraped < datetime.utcfromtimestamp(storyItemJson["node"]["taken_at_timestamp"]):
-                    for x in storyItemJson["node"]["tappable_objects"]:
-                        if x["__typename"] == "GraphTappableMention":
-                            if x["username"] == account_to_mention:
-                                logger.info(f"New stories Found where {account_to_mention} is mentionned")
-                                fullStoryJson.append(storyItemJson)
-                                story_owner = storyItemJson["node"]["owner"]["username"]
-                                story_id = storyItemJson["node"]["id"]
-                                story_owner_profile_pic_url = storyItemJson["node"]["owner"]["profile_pic_url"]
-                                story_is_video = storyItemJson["node"]["is_video"]
-                                taken_at_timestamp = storyItemJson["node"]["taken_at_timestamp"]
-                                time = story_time_str(taken_at_timestamp)
+    try:
+        for story in stories:
+            # getting latest scrap time
+            # story_last_item_utc = story.latest_media_utc()
+            story_last_item_utc = datetime.utcfromtimestamp(story._node['latest_reel_media'])
+            # cheking is story is newer than latest scrap time
+            if last_scraped < story_last_item_utc:
+                for storyItem in story.get_items():
+                    storyItemJson  = structures.get_json_structure(storyItem)
+                    if last_scraped < datetime.utcfromtimestamp(storyItemJson["node"]["taken_at_timestamp"]):
+                        for x in storyItemJson["node"]["tappable_objects"]:
+                            if x["__typename"] == "GraphTappableMention":
+                                if x["username"] == account_to_mention:
+                                    log["status"] = "found 1 new story"
+                                    logger.info(json.dumps(log))
+                                    fullStoryJson.append(storyItemJson)
+                                    story_owner = storyItemJson["node"]["owner"]["username"]
+                                    story_id = storyItemJson["node"]["id"]
+                                    story_owner_profile_pic_url = storyItemJson["node"]["owner"]["profile_pic_url"]
+                                    story_is_video = storyItemJson["node"]["is_video"]
+                                    taken_at_timestamp = storyItemJson["node"]["taken_at_timestamp"]
+                                    time = story_time_str(taken_at_timestamp)
 
-                                if story_is_video:
-                                    story_video_url = storyItemJson["node"]["video_resources"][0]["src"]
-                                    story_media_url = story_video_url
-                                    story_display_url = storyItemJson["node"]["display_url"]
-                                    story_duration = storyItemJson["node"]["video_duration"] * 1000
-                                else:
-                                    story_video_url = ""
-                                    story_display_url = storyItemJson["node"]["display_url"]
-                                    story_media_url = story_display_url
-                                    story_duration = 5000
-
-                                profile_picture(story_owner_profile_pic_url, story_owner)
-                                story_media(story_video_url, story_display_url, story_is_video, story_id)
-
-                                data = {
-                                    'story_id': story_id,
-                                    'story_time': time,
-                                    'user': story_owner,
-                                    'is_video': story_is_video,
-                                    "story_media_url": story_media_url,
-                                    'media': story_id,
-                                    'time': story_duration
-                                }
-                                response.append(data)
-
-                                # saving storyItemJson to S3 for logs
-                                filekey_history = f"{dir_history}/{story_owner}/{story_id}.json"
-                                try:
-                                    s3.head_object(Bucket=webbucket, Key=filekey_history)
-                                except botocore.exceptions.ClientError as e:
-                                    if int(e.response['Error']['Code']) == 404:
-                                        # The object does not exist.
-                                        s3.put_object(
-                                            Body=str(json.dumps(storyItemJson)),
-                                            Bucket=webbucket,
-                                            Key=filekey_history,
-                                        )
+                                    if story_is_video:
+                                        story_video_url = storyItemJson["node"]["video_resources"][0]["src"]
+                                        story_media_url = story_video_url
+                                        story_display_url = storyItemJson["node"]["display_url"]
+                                        story_duration = storyItemJson["node"]["video_duration"] * 1000
                                     else:
-                                        logger.info("error accessing the s3 bucket. check bucket policy")
-                                        logger.info(e.response['Error'])
+                                        story_video_url = ""
+                                        story_display_url = storyItemJson["node"]["display_url"]
+                                        story_media_url = story_display_url
+                                        story_duration = 5000
+
+                                    profile_picture(story_owner_profile_pic_url, story_owner)
+                                    story_media(story_video_url, story_display_url, story_is_video, story_id)
+
+                                    data = {
+                                        'story_id': story_id,
+                                        'story_time': time,
+                                        'user': story_owner,
+                                        'is_video': story_is_video,
+                                        "story_media_url": story_media_url,
+                                        'media': story_id,
+                                        'time': story_duration
+                                    }
+                                    response.append(data)
+
+                                    # saving storyItemJson to S3 for logs
+                                    filekey_history = f"{dir_history}/{story_owner}/{story_id}.json"
+                                    try:
+                                        s3.head_object(Bucket=webbucket, Key=filekey_history)
+                                    except botocore.exceptions.ClientError as e:
+                                        if int(e.response['Error']['Code']) == 404:
+                                            # The object does not exist.
+                                            s3.put_object(
+                                                Body=str(json.dumps(storyItemJson)),
+                                                Bucket=webbucket,
+                                                Key=filekey_history,
+                                            )
+                                        else:
+                                            logger.info("error accessing the s3 bucket. check bucket policy")
+                                            logger.info(e.response['Error'])
+                                else:
+                                    # logger.info(f"Story Item {id} not mentionning {account_to_mention}")
+                                    pass
                             else:
-                                # logger.info(f"Story Item {id} not mentionning {account_to_mention}")
+                                # logger.info(f"Story Item {id} has no mentions")
                                 pass
-                        else:
-                            # logger.info(f"Story Item {id} has no mentions")
-                            pass
 
-    # saving storiesJson scraped now for logs
-    current_date_time = datetime.utcnow().strftime("%Y-%m-%d-%H:%M:%S")
-    if response != []:
-        filekey_all = f"{dir_all}/{current_date_time}.json"
+        # saving storiesJson scraped now for logs
+        current_date_time = datetime.utcnow().strftime("%Y-%m-%d-%H:%M:%S")
+        if response != []:
+            filekey_all = f"{dir_all}/{current_date_time}.json"
+            s3.put_object(
+                Body=json.dumps(fullStoryJson),
+                Bucket=webbucket,
+                Key=filekey_all,
+            )
+        
+        # updating latest scrap time
         s3.put_object(
-            Body=json.dumps(fullStoryJson),
+            Body=current_date_time,
             Bucket=webbucket,
-            Key=filekey_all,
+            Key=last_scrapped_s3_key,
         )
-    
-    # updating latest scrap time
-    s3.put_object(
-        Body=current_date_time,
-        Bucket=webbucket,
-        Key=last_scrapped_s3_key,
-    )
+    except Exceptions as err:
+        log["status"] = f"error: {str(err)}"
+        logger.info(json.dumps(log))
+    else:
+        log["status"] = "completed"
+        log["response"] = response
+        logger.info(json.dumps(log))
 
-    logger.info("stories response")
-    logger.info(response)
     return response
 
 def story_time_str(story_time_taken):

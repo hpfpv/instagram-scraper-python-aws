@@ -25,8 +25,8 @@ def lambda_handler(event, context):
         "request_state": { "S": "in-progress" },
     }
 
-    log["message"] = json.dumps(record)
-    logger.info(json.dumps(log))
+    log["status"] = "completed"
+    log["record"] = record
 
     client.put_item(
         TableName=os.environ['EVENTS_TABLE'],
