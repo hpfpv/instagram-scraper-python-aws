@@ -129,7 +129,7 @@ def check_for_new_stories(requestId, account_to_mention):
     bucketurl = f'https://{webbucket}.s3.amazonaws.com/'
     s3 = boto3.client('s3')
 
-    stories = get_followers_stories(account_to_mention)
+    stories = get_followers_stories(requestId, account_to_mention)
 
     log = {}
     log["function"] = "check_for_new_stories"
