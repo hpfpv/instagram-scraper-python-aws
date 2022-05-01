@@ -67,7 +67,7 @@ def get_instance(requestId):
             random_instance.login(user=username, passwd=password)
         except (Exceptions.ConnectionException, Exceptions.BadCredentialsException, Exceptions.InvalidArgumentException) as err:
             log["status"] = f"error: {str(err)}"
-            log["details"] = f"scraper: {username}"
+            log["scraper"] = username
             logger.info(json.dumps(log))
         else:
             success = True
