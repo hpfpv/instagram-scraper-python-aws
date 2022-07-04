@@ -7,7 +7,7 @@
         "birthday": "March 4, 1961",
         "gender": "male",
         "phone": "51878144",
-        "status": "active"
+        "status": "inactive"
     },
     {
         "username": "patrickcmarin",
@@ -17,7 +17,7 @@
         "birthday": "March 19, 1977",
         "gender": "male",
         "phone": "51878144",
-        "status": "active"
+        "status": "inactive"
     },
     {
         "username": "kargleannaf",
@@ -47,7 +47,7 @@
         "birthday": "April 6, 1987",
         "gender": "male",
         "phone": "00000000",
-        "status": "active"
+        "status": "inactive"
     },
     {
         "username": "shirleydgoodman",
@@ -57,6 +57,6 @@
         "birthday": "March 21, 1983",
         "gender": "female",
         "phone": "00000000",
-        "status": "active"
+        "status": "inactive"
     }
 ]
